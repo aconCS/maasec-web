@@ -36,6 +36,12 @@ jobs:
         env:
           # Feeds site.url — canonical links, sitemap.xml, robots.txt, OG tags.
           NEXT_PUBLIC_SITE_URL: https://maasec.com
+          # TEMPORARY: serves the site under /maasec-web/ so it works at the
+          # default aconcs.github.io/maasec-web/ URL while maasec.com's DNS
+          # isn't live yet. Remove this line once DNS points to GitHub Pages —
+          # the custom domain serves from the root, so leaving it set would
+          # break every asset path in production.
+          NEXT_PUBLIC_BASE_PATH: /maasec-web
           # Third-party form backend for the join form. Set this as a repo
           # variable (Settings → Secrets and variables → Actions → Variables).
           # Unset, the form falls back to Discord/WhatsApp/email instead of
