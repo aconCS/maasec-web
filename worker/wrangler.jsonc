@@ -1,0 +1,25 @@
+{
+  // Cloudflare Worker backing the join form on the static GitHub Pages site.
+  // Deploy from this directory:  npx wrangler deploy
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "maasec-apply",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-08-01",
+  "observability": { "enabled": true },
+
+  "vars": {
+    // Origins allowed to POST here. Anything else is rejected with 403, which
+    // is what stops third parties burning the Resend quota. Include the
+    // localhost origin you use for `npm run serve` while testing.
+    "ALLOWED_ORIGINS": "https://maasec.com,http://localhost:4400",
+    "MAIL_FROM": "MaaSec <noreply@maasec.com>",
+    "MAIL_TO": "acm@maasec.com"
+  }
+
+  // RESEND_API_KEY is a secret, never a var:
+  //   npx wrangler secret put RESEND_API_KEY
+  //
+  // Optional per-IP rate limiting — create a KV namespace and uncomment:
+  //   npx wrangler kv namespace create RATE_LIMIT
+  // "kv_namespaces": [{ "binding": "RATE_LIMIT", "id": "<id-from-that-command>" }]
+}

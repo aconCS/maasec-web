@@ -1,0 +1,49 @@
+---
+title: The OWASP Top 10, condensed to what you'll actually see
+date: 2025-11-03
+author: MaaSec
+tags: [web, reference, owasp]
+category: Resource
+excerpt: A one-page reference to the ten vulnerability classes, ranked by how often we actually find them in student projects and bug bounty scope — with a lab or writeup for each one.
+---
+
+The official OWASP list is written for defenders. This is the same ten
+classes, reordered by what we actually trip over during labs, with a place to
+go practice each one.
+
+## Where to start
+
+Broken access control and injection account for most of what shows up in a
+first CTF box or a first bounty report. Cryptographic failures and
+misconfiguration follow close behind once targets get more realistic. Start
+with [PortSwigger's Web Security Academy](https://portswigger.net/web-security) —
+every topic below links to one of its free labs, and it's the closest thing
+this list has to a spine.
+
+## OWASP TOP 10 
+
+1. **Broken access control** — [PortSwigger: Access control](https://portswigger.net/web-security/access-control)
+2. **Cryptographic failures** — [OWASP Cryptographic Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html)
+3. **Injection** — [PortSwigger: SQL injection](https://portswigger.net/web-security/sql-injection) · [OS command injection](https://portswigger.net/web-security/os-command-injection)
+4. **Insecure design** — [OWASP Threat Modeling Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html)
+5. **Security misconfiguration** — [PortSwigger: Information disclosure](https://portswigger.net/web-security/information-disclosure)
+6. **Vulnerable and outdated components** — [OWASP Vulnerable Dependency Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Vulnerable_Dependency_Management_Cheat_Sheet.html)
+7. **Identification and authentication failures** — [PortSwigger: Authentication](https://portswigger.net/web-security/authentication)
+8. **Software and data integrity failures** — [PortSwigger: Insecure deserialization](https://portswigger.net/web-security/deserialization)
+9. **Security logging and monitoring failures** — [OWASP Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)
+10. **Server-side request forgery** — [PortSwigger: SSRF](https://portswigger.net/web-security/ssrf)
+
+## Where to practice:
+
+- [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/) — a deliberately
+  vulnerable app covering the full Top 10 in one target, good for tying the
+  list together instead of drilling categories in isolation.
+- [OWASP Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) —
+  the methodology behind the labs: what to test, in what order, and how to
+  write it up once you find something.
+- [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/) — the
+  defender's-eye view of every category above. Worth reading once you've
+  broken something, so you know what the fix actually looks like.
+
+Bookmark the [official OWASP project](https://owasp.org/www-project-top-ten/)
+for the full detail behind each category.

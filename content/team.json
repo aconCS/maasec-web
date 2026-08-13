@@ -1,0 +1,39 @@
+[
+  {
+    "id": "board",
+    "eyebrow": "Leadership",
+    "title": "Our board",
+    "blurb": "Four people keeping the organisation running, the University happy, and the teams winning.",
+    "surface": "blue",
+    "members": [
+      { "name": "Luka Toplak", "role": "President", "photo": "/images/board/luka.jpg" },
+      { "name": "Theodotos Neokleous", "role": "Vice President", "photo": "/images/board/theo.jpg" },
+      { "name": "Ivan Borysov", "role": "Treasurer", "photo": "/images/board/ivan.png" },
+      { "name": "Andreas Constantinou", "role": "Secretary", "photo": "/images/board/andreas.png" }
+    ]
+  },
+  {
+    "id": "ctf",
+    "eyebrow": "Competition",
+    "title": "CTF team",
+    "blurb": "The squad that competes internationally as MaaSec, and trains the next.",
+    "surface": "white",
+    "roles": ["Captain", "Pwn & reversing", "Web & crypto", "Forensics", "OSINT"]
+  },
+  {
+    "id": "marketing",
+    "eyebrow": "Community",
+    "title": "Marketing team",
+    "blurb": "Events, socials, and outreach that keep the labs full.",
+    "surface": "blue",
+    "roles": ["Content & design", "Events", "Socials", "Partnerships"]
+  },
+  {
+    "id": "consultancy",
+    "eyebrow": "Practice",
+    "title": "Consultancy team",
+    "blurb": "Supervised security reviews for organisations in the region.",
+    "surface": "white",
+    "roles": ["Lead", "Web assessment", "Reporting"]
+  }
+]

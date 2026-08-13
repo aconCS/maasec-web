@@ -1,26 +1,175 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * MaaSec design tokens.
+ * Ported from the Claude Design project's design system:
+ *   _ds/maasec-design-system-fbf898b5.../tokens/*.css
+ * That project is the source of truth — keep these values in sync with it.
+ */
+@theme {
+  /* --- Brand blues (replaces Tailwind's default blue) --- */
+  --color-blue-900: #0d2438;
+  --color-blue-800: #113357;
+  --color-blue-700: #173f66;
+  --color-blue-600: #1f4979;
+  --color-blue-500: #2c5d94;
+  --color-blue-400: #4c7bb0;
+  --color-blue-300: #8babc9;
+  --color-blue-200: #c3d6e5;
+  --color-blue-100: #e7eef5;
+  --color-blue-50: #f3f7fb;
+
+  /* --- Accents, used sparingly (status / highlight only) --- */
+  --color-green-500: #8fc17c;
+  --color-green-400: #a3cf94;
+  --color-green-100: #eef6ea;
+  --color-yellow-500: #e9d16b;
+  --color-yellow-400: #f2e18a;
+  --color-yellow-100: #fbf6e2;
+
+  /* --- Warm neutrals (replaces Tailwind's default gray) --- */
+  --color-gray-800: #3a3c32;
+  --color-gray-700: #54564a;
+  --color-gray-600: #75776a;
+  --color-gray-500: #9a9c8f;
+  --color-gray-400: #c2c4b8;
+  --color-gray-300: #dcdcd6;
+  --color-gray-200: #eeeeee;
+  --color-gray-100: #f6f6f4;
+
+  /* Page canvas. The site runs a deliberately narrow three-surface palette:
+     white (canvas + light sections), blue-100 (alternating sections and
+     panels), blue-900 (dark sections and footer). Anything else in the blue
+     ramp is an accent — hairlines, buttons, badges — never a surface. */
+  --color-canvas: #ffffff;
+
+  /* --- Semantic aliases --- */
+  --color-border-subtle: #dcdcd6;
+  --color-border-strong: #8babc9;
+  --color-danger: #b0413e;
+
+  /* --- Type --- */
+  --font-display: var(--font-poppins), -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-body: var(--font-poppins), -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: var(--font-lora), ui-serif, Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", monospace;
+
+  /* --- Radii --- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-xl: 22px;
+
+  /* --- Elevation: navy-tinted, never neutral black --- */
+  --shadow-sm: 0 1px 2px rgba(17, 51, 87, 0.06);
+  --shadow-md: 0 4px 12px rgba(17, 51, 87, 0.1);
+  --shadow-lg: 0 12px 32px rgba(17, 51, 87, 0.16);
+
+  /* --- Motion --- */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-soft: cubic-bezier(0, 0, 0.2, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    background: var(--color-canvas);
+    color: #000;
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    margin: 0;
+  }
+
+  ::selection {
+    background: var(--color-blue-200);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-blue-600);
+    outline-offset: 2px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  /* Horizontal snap rails (expert quotes, event cards) hide their scrollbar. */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Scroll reveal: elements start offset and are released by IntersectionObserver.
+   Without JS, or with reduced motion, they must still render visible. */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 600ms var(--ease-out-soft) var(--reveal-delay, 0ms),
+    transform 600ms var(--ease-out-soft) var(--reveal-delay, 0ms);
+}
+
+[data-reveal][data-revealed] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Team-in-action gallery: two photo rows drifting in opposite directions.
+   Each row repeats its photo set 6x (see REPEAT in gallery.tsx) so the row
+   is always wider than the viewport — moving by exactly 1/6 of that total
+   width equals one full set, which loops seamlessly with no gap. */
+@keyframes gallery-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% / 6));
+  }
+}
+
+@keyframes gallery-marquee-reverse {
+  from {
+    transform: translateX(calc(-100% / 6));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-gallery-marquee {
+  animation: gallery-marquee 42s linear infinite;
+}
+
+.animate-gallery-marquee-reverse {
+  animation: gallery-marquee-reverse 42s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .animate-gallery-marquee,
+  .animate-gallery-marquee-reverse {
+    animation: none;
+  }
 }

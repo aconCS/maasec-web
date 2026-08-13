@@ -1,0 +1,58 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Lets the board redeploy from the Actions tab without pushing a commit.
+  workflow_dispatch:
+
+# Allow one deploy at a time; don't cancel a run that's mid-publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint
+      - run: npm run typecheck
+
+      - name: Build static export
+        env:
+          # Feeds site.url — canonical links, sitemap.xml, robots.txt, OG tags.
+          NEXT_PUBLIC_SITE_URL: https://maasec.com
+          # Third-party form backend for the join form. Set this as a repo
+          # variable (Settings → Secrets and variables → Actions → Variables).
+          # Unset, the form falls back to Discord/WhatsApp/email instead of
+          # silently dropping applications.
+          NEXT_PUBLIC_APPLY_ENDPOINT: ${{ vars.NEXT_PUBLIC_APPLY_ENDPOINT }}
+        run: npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
