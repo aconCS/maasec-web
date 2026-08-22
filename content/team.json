@@ -40,16 +40,16 @@
   "members": [
     {
       "title": "Luka Toplak",
-      "role": "President",
+      "role": "Vice President",
       "groupId": "board",
-      "order": 0,
+      "order": 1,
       "photo": "/images/board/luka.jpg"
     },
     {
       "title": "Theodotos Neokleous",
-      "role": "Vice President",
+      "role": "President",
       "groupId": "board",
-      "order": 1,
+      "order": 0,
       "photo": "/images/board/theo.jpg"
     },
     {
