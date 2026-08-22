@@ -12,7 +12,7 @@
       "title": "CTF team",
       "groupId": "ctf",
       "blurb": "The squad that competes internationally as MaaSec, and trains the next.",
-      "surface": "blue",
+      "surface": "white",
       "roles": "PWN\nReverse Engineering\nWeb Exploitation\nCryptography\nForensics\nOSINT",
       "memberCount": 26,
       "order": 1
