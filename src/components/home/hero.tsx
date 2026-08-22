@@ -2,8 +2,8 @@ import Image from "next/image";
 import { ButtonLink } from "@/components/ui/button";
 import { getSpeakers } from "@/lib/content";
 
-export function Hero() {
-  const speakers = getSpeakers();
+export async function Hero() {
+  const speakers = await getSpeakers();
 
   return (
     <section className="relative overflow-hidden">
@@ -54,7 +54,7 @@ export function Hero() {
               so it never stacks below the copy at intermediate widths. */}
           <div className="relative hidden lg:block">
             <div className="relative flex aspect-square w-full items-center justify-center">
-              <div className="relative w-[86%] overflow-hidden rounded-[10px] shadow-[0_12px_30px_rgba(17,51,87,.14)]">
+              <div className="relative w-[86%] overflow-hidden rounded-card shadow-[0_12px_30px_rgba(17,51,87,.14)]">
                 <Image
                   src="/images/gallery/team2.jpg"
                   alt="The MaaSec club"

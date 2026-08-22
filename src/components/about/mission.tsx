@@ -105,7 +105,7 @@ export function Mission() {
           </h2>
           {/* Capped by measure rather than a pixel width so it fills its column
               at lg+ and still breaks at a readable line length when stacked. */}
-          <p className="max-w-[58ch] font-serif text-[16.5px] leading-[1.6] font-medium text-gray-700">
+          <p className="max-w-[58ch] font-body text-[16.5px] leading-[1.6] font-medium text-gray-700">
             MaaSec empowers students to become the next generation of cybersecurity professionals. We create opportunities to learn from industry experts, build practical skills, gain real-world experience, and connect with a diverse cybersecurity community. Through workshops, professional events, and international CTF competitions, we aim to bridge the gap between university and industry while giving every student the opportunity to learn, compete, and grow.
           </p>
         </div>

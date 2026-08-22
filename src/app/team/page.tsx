@@ -3,7 +3,6 @@ import { JoinCta } from "@/components/home/join-cta";
 import { Footer } from "@/components/site/footer";
 import { Nav } from "@/components/site/nav";
 import { ButtonLink } from "@/components/ui/button";
-import { Eyebrow } from "@/components/ui/eyebrow";
 import { ImageSlot } from "@/components/ui/image-slot";
 import { ScrollRail } from "@/components/ui/scroll-rail";
 import { getTeamGroups } from "@/lib/content";
@@ -14,13 +13,13 @@ export const metadata: Metadata = {
     "Meet MaaSec's board, CTF team, marketing, and consultancy teams — Maastricht University's student cybersecurity organisation.",
 };
 
-export default function TeamPage() {
-  const groups = getTeamGroups();
+export default async function TeamPage() {
+  const groups = await getTeamGroups();
 
   return (
     <>
       <Nav />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <header className="mx-auto flex max-w-[840px] flex-col items-center gap-5 px-6 pt-24 pb-16 text-center">
           <div className="flex" aria-hidden>
             <ImageSlot
@@ -107,7 +106,7 @@ export default function TeamPage() {
                         <span className="font-display text-base leading-tight font-semibold text-blue-900">
                           {member.name}
                         </span>
-                        <span className="font-body text-[13.5px] leading-tight text-gray-600">
+                        <span className="font-body text-[13.5px] leading-tight text-gray-700">
                           {member.role}
                         </span>
                       </div>
@@ -120,9 +119,6 @@ export default function TeamPage() {
                    never leaves empty cells sitting in the rule work, and no
                    numbering — these are parallel specialisms, not a sequence. */
                 <div className="flex flex-col gap-4">
-                  <Eyebrow className="text-gray-600">
-                    Roles on this team
-                  </Eyebrow>
                   <ul className="flex flex-wrap border-t border-b border-blue-200">
                     {group.roles.map((role) => (
                       <li

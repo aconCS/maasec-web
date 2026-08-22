@@ -10,7 +10,7 @@ export function PastEvents({ events }: { events: EventEntry[] }) {
           key={event.slug}
           className="flex w-[min(240px,75vw)] flex-none snap-start flex-col gap-2.5 border-t border-blue-200 py-6"
         >
-          <span className="font-mono text-xs leading-none text-gray-600">
+          <span className="font-mono text-xs leading-none text-gray-700">
             {monthYear(event.date)}
           </span>
           <h3 className="font-display text-[18px] leading-tight font-semibold text-blue-900">

@@ -48,6 +48,12 @@ export default function RootLayout({
       className={`${poppins.variable} ${lora.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
+        <a
+          href="#main-content"
+          className="sr-only font-body text-sm font-semibold focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-blue-900 focus:px-4 focus:py-2.5 focus:text-white focus:outline-none focus:ring-3 focus:ring-blue-600/50"
+        >
+          Skip to content
+        </a>
         {children}
         <Reveal />
       </body>

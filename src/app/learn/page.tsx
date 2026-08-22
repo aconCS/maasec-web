@@ -11,13 +11,13 @@ export const metadata: Metadata = {
     "Resources, guides, writeups, and blogs from MaaSec members — everything we've learned, published as we learn it.",
 };
 
-export default function LearnPage() {
-  const entries = getLearnEntries();
+export default async function LearnPage() {
+  const entries = await getLearnEntries();
 
   return (
     <>
       <Nav />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <section className="relative mx-auto max-w-[1160px] overflow-hidden px-6 pt-20 pb-14 md:px-14">
           <div className="relative z-10 flex flex-col gap-[18px]">
             <h1 className="font-display text-[clamp(40px,5vw,68px)] leading-[1.02] font-extrabold tracking-[-0.04em] text-blue-900">

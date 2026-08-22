@@ -18,7 +18,7 @@ export default function CodeOfConductPage() {
   return (
     <>
       <Nav />
-      <main className="px-6 pt-28 pb-20 md:px-14">
+      <main id="main-content" tabIndex={-1} className="px-6 pt-28 pb-20 md:px-14">
         <div className="mx-auto flex max-w-[720px] flex-col">
           <h1 className="mb-2 font-display text-[clamp(36px,5vw,56px)] leading-tight font-extrabold tracking-[-0.04em] text-blue-900">
             Code of conduct

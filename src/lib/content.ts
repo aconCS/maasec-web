@@ -1,20 +1,30 @@
-import fs from "node:fs";
-import path from "node:path";
-import matter from "gray-matter";
+import eventsData from "../../content/events.json";
+import joinTeamsData from "../../content/join-teams.json";
+import speakersData from "../../content/speakers.json";
+import teamData from "../../content/team.json";
+import writeupsData from "../../content/writeups.json";
 
-const CONTENT_DIR = path.join(process.cwd(), "content");
+/**
+ * All content lives in the `content/` directory as JSON, imported directly
+ * so it's baked into the static export at build time. Edit those files and
+ * rebuild for changes to go live.
+ */
 
-function readDir(sub: string): { slug: string; file: string; raw: string }[] {
-  const dir = path.join(CONTENT_DIR, sub);
-  if (!fs.existsSync(dir)) return [];
-  return fs
-    .readdirSync(dir)
-    .filter((f) => /\.(md|mdx)$/.test(f))
-    .map((file) => ({
-      slug: file.replace(/\.(md|mdx)$/, ""),
-      file,
-      raw: fs.readFileSync(path.join(dir, file), "utf8"),
-    }));
+function stripHtml(html: string): string {
+  return html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&#8217;|&#8216;/g, "’")
+    .replace(/&#8220;|&#8221;/g, "”")
+    .replace(/&#8211;/g, "–")
+    .replace(/&#8212;/g, "—")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;/g, "'")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 // --- Events -------------------------------------------------------------
@@ -41,42 +51,52 @@ export type EventMeta = {
 
 export type EventEntry = EventMeta & { body: string };
 
-function parseEvent(slug: string, raw: string): EventEntry {
-  const { data, content } = matter(raw);
-  return {
-    slug,
-    title: String(data.title),
-    date: new Date(data.date).toISOString(),
-    time: String(data.time ?? ""),
-    location: String(data.location ?? ""),
-    category: data.category as EventCategory,
-    status: data.status as EventStatus | undefined,
-    result: data.result ? String(data.result) : undefined,
-    signupUrl: data.signupUrl ? String(data.signupUrl) : undefined,
-    body: content.trim(),
-  };
-}
+type RawEvent = {
+  slug: string;
+  title: string;
+  content: string | null;
+  eventDate: string | null;
+  eventTime: string | null;
+  location: string | null;
+  category: string | null;
+  status: string | null;
+  result: string | null;
+  signupUrl: string | null;
+};
 
-export function getEvents(): EventEntry[] {
-  return readDir("events")
-    .map(({ slug, raw }) => parseEvent(slug, raw))
+export async function getEvents(): Promise<EventEntry[]> {
+  return (eventsData as RawEvent[])
+    .map((n) => ({
+      slug: n.slug,
+      title: n.title,
+      date: new Date(n.eventDate ?? "").toISOString(),
+      time: n.eventTime ?? "",
+      location: n.location ?? "",
+      category: (n.category ?? "Lab") as EventCategory,
+      status: (n.status || undefined) as EventStatus | undefined,
+      result: n.result || undefined,
+      signupUrl: n.signupUrl || undefined,
+      body: stripHtml(n.content ?? ""),
+    }))
     .sort((a, b) => +new Date(b.date) - +new Date(a.date));
 }
 
 /** Events dated today or later, soonest first. */
-export function getUpcomingEvents(now = new Date()): EventEntry[] {
+export async function getUpcomingEvents(now = new Date()): Promise<EventEntry[]> {
   const start = new Date(now);
   start.setHours(0, 0, 0, 0);
-  return getEvents()
+  const events = await getEvents();
+  return events
     .filter((e) => +new Date(e.date) >= +start)
     .sort((a, b) => +new Date(a.date) - +new Date(b.date));
 }
 
 /** Events before today, most recent first. */
-export function getPastEvents(now = new Date()): EventEntry[] {
+export async function getPastEvents(now = new Date()): Promise<EventEntry[]> {
   const start = new Date(now);
   start.setHours(0, 0, 0, 0);
-  return getEvents().filter((e) => +new Date(e.date) < +start);
+  const events = await getEvents();
+  return events.filter((e) => +new Date(e.date) < +start);
 }
 
 // --- Learn (resources, guides, writeups, blogs) --------------------------
@@ -96,32 +116,43 @@ export type LearnMeta = {
 
 export type LearnEntry = LearnMeta & { body: string };
 
-function parseLearnEntry(slug: string, raw: string): LearnEntry {
-  const { data, content } = matter(raw);
-  return {
-    slug,
-    title: String(data.title),
-    date: new Date(data.date).toISOString(),
-    author: String(data.author ?? "MaaSec"),
-    team: data.team ? String(data.team) : undefined,
-    tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
-    excerpt: String(data.excerpt ?? ""),
-    category: (data.category as LearnCategory) ?? "Writeup",
-    body: content.trim(),
-  };
-}
+type RawWriteup = {
+  slug: string;
+  title: string;
+  content: string | null;
+  excerpt: string | null;
+  writeupDate: string | null;
+  author: string | null;
+  team: string | null;
+  tags: string | null;
+  category: string | null;
+};
 
-export function getLearnEntries(): LearnEntry[] {
-  return readDir("learn")
-    .map(({ slug, raw }) => parseLearnEntry(slug, raw))
+export async function getLearnEntries(): Promise<LearnEntry[]> {
+  return (writeupsData as RawWriteup[])
+    .map((n) => ({
+      slug: n.slug,
+      title: n.title,
+      date: new Date(n.writeupDate ?? "").toISOString(),
+      author: n.author || "MaaSec",
+      team: n.team || undefined,
+      tags: (n.tags ?? "")
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean),
+      excerpt: stripHtml(n.excerpt ?? ""),
+      category: (n.category || "Writeup") as LearnCategory,
+      body: (n.content ?? "").trim(),
+    }))
     .sort((a, b) => +new Date(b.date) - +new Date(a.date));
 }
 
-export function getLearnEntry(slug: string): LearnEntry | undefined {
-  return getLearnEntries().find((w) => w.slug === slug);
+export async function getLearnEntry(slug: string): Promise<LearnEntry | undefined> {
+  const entries = await getLearnEntries();
+  return entries.find((w) => w.slug === slug);
 }
 
-// --- Team & teams (JSON) ------------------------------------------------
+// --- Team & teams ---------------------------------------------------------
 
 export type Member = { name: string; role: string; photo?: string };
 
@@ -147,21 +178,85 @@ export type JoinTeam = {
   benefits: string[];
 };
 
-function readJson<T>(file: string): T {
-  return JSON.parse(
-    fs.readFileSync(path.join(CONTENT_DIR, file), "utf8"),
-  ) as T;
+type RawTeamGroup = {
+  title: string;
+  eyebrow: string | null;
+  groupId: string | null;
+  blurb: string | null;
+  surface: string | null;
+  roles: string | null;
+  order: number;
+};
+
+type RawTeamMember = {
+  title: string;
+  role: string | null;
+  groupId: string | null;
+  order: number;
+  photo?: string;
+};
+
+export async function getTeamGroups(): Promise<TeamGroup[]> {
+  const groups = teamData.groups as RawTeamGroup[];
+  const members = [...(teamData.members as RawTeamMember[])].sort(
+    (a, b) => a.order - b.order,
+  );
+
+  return [...groups]
+    .sort((a, b) => a.order - b.order)
+    .map((g) => {
+      const id = g.groupId ?? "";
+      const groupMembers = members
+        .filter((m) => m.groupId === id)
+        .map((m) => ({
+          name: m.title,
+          role: m.role ?? "",
+          photo: m.photo,
+        }));
+      const roles = (g.roles ?? "")
+        .split("\n")
+        .map((r) => r.trim())
+        .filter(Boolean);
+
+      return {
+        id,
+        eyebrow: g.eyebrow ?? "",
+        title: g.title,
+        blurb: g.blurb ?? "",
+        surface: (g.surface ?? "white") as "white" | "blue",
+        members: groupMembers.length ? groupMembers : undefined,
+        roles: roles.length ? roles : undefined,
+      };
+    });
 }
 
-export function getTeamGroups(): TeamGroup[] {
-  return readJson<TeamGroup[]>("team.json");
+type RawJoinTeam = {
+  title: string;
+  teamId: string | null;
+  tagline: string | null;
+  benefits: string | null;
+  order: number;
+};
+
+export async function getJoinTeams(): Promise<JoinTeam[]> {
+  return [...(joinTeamsData as RawJoinTeam[])]
+    .sort((a, b) => a.order - b.order)
+    .map((t) => ({
+      id: t.teamId ?? "",
+      title: t.title,
+      tagline: t.tagline ?? "",
+      benefits: (t.benefits ?? "")
+        .split("\n")
+        .map((b) => b.trim())
+        .filter(Boolean),
+    }));
 }
 
-export function getJoinTeams(): JoinTeam[] {
-  return readJson<JoinTeam[]>("teams.json");
-}
+type RawSpeaker = { title: string; order: number };
 
 /** Guest-speaker company names — the "hosted industry experts from" list. */
-export function getSpeakers(): string[] {
-  return readJson<string[]>("speakers.json");
+export async function getSpeakers(): Promise<string[]> {
+  return [...(speakersData as RawSpeaker[])]
+    .sort((a, b) => a.order - b.order)
+    .map((s) => s.title);
 }

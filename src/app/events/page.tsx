@@ -12,15 +12,17 @@ export const metadata: Metadata = {
     "Upcoming CTF sessions, bug bounty pairings, and labs from MaaSec — Maastricht University's cybersecurity student organisation.",
 };
 
-export default function EventsPage() {
-  const upcoming = getUpcomingEvents();
-  const past = getPastEvents();
+export default async function EventsPage() {
+  const [upcoming, past] = await Promise.all([
+    getUpcomingEvents(),
+    getPastEvents(),
+  ]);
   const todayDay = String(new Date().getDate()).padStart(2, "0");
 
   return (
     <>
       <Nav />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <section className="relative mx-auto max-w-[1160px] overflow-hidden px-6 pt-20 pb-14 md:px-14">
           <span
             aria-hidden
@@ -43,7 +45,7 @@ export default function EventsPage() {
 
         <section className="bg-blue-100 px-6 py-22 md:px-14">
           <div className="mx-auto flex max-w-[1160px] flex-col gap-6">
-            <span className="font-mono text-[11px] leading-none tracking-[0.18em] text-gray-600 uppercase">
+            <span className="font-mono text-[11px] leading-none tracking-[0.18em] text-gray-700 uppercase">
               Past events
             </span>
             <PastEvents events={past} />

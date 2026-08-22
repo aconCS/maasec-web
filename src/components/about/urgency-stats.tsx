@@ -2,6 +2,7 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { Briefcase, Clock, Lock } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 gsap.registerPlugin(useGSAP);
@@ -53,53 +54,25 @@ function MoneyGraphic() {
   );
 }
 
-function ClockGraphic() {
-  return (
-    <svg aria-hidden viewBox="0 0 40 40" className="shrink-0 h-9 w-9 text-blue-900">
-      <circle cx="20" cy="20" r="17" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.25" />
-      <line x1="20" y1="20" x2="20" y2="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
-      <line
-        className="clock-hand"
-        x1="20"
-        y1="20"
-        x2="29"
-        y2="20"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <circle cx="20" cy="20" r="1.8" fill="currentColor" />
-    </svg>
-  );
+// Only the cost stat animates (the sparkline it's built around). The rest
+// are static lucide icons — plain markers for their stat, not illustrations.
+function ClockIcon() {
+  return <Clock aria-hidden className="h-9 w-9 shrink-0 text-blue-900" strokeWidth={1.75} />;
 }
 
-function JobsGraphic() {
-  return (
-    <svg aria-hidden viewBox="0 0 40 40" className="shrink-0 h-9 w-9 text-blue-900">
-      <rect x="6" y="16" width="28" height="18" rx="3" fill="none" stroke="currentColor" strokeWidth="2" />
-      <path d="M15 16v-3a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v3" fill="none" stroke="currentColor" strokeWidth="2" />
-      <line x1="6" y1="24" x2="34" y2="24" stroke="currentColor" strokeWidth="2" opacity="0.4" />
-      <circle cx="20" cy="24" r="2.2" fill="currentColor" />
-    </svg>
-  );
+function JobsIcon() {
+  return <Briefcase aria-hidden className="h-9 w-9 shrink-0 text-blue-900" strokeWidth={1.75} />;
 }
 
-function PercentRing() {
-  return (
-    <div
-      className="percent-ring shrink-0 h-9 w-9 rounded-full"
-      style={{
-        background: `conic-gradient(var(--color-blue-900) 0% 44%, var(--color-blue-200) 44% 100%)`,
-      }}
-    />
-  );
+function RansomIcon() {
+  return <Lock aria-hidden className="h-9 w-9 shrink-0 text-blue-900" strokeWidth={1.75} />;
 }
 
 const graphics = {
   cost: MoneyGraphic,
-  clock: ClockGraphic,
-  jobs: JobsGraphic,
-  percent: PercentRing,
+  clock: ClockIcon,
+  jobs: JobsIcon,
+  percent: RansomIcon,
 };
 
 export function UrgencyStats() {
@@ -128,14 +101,6 @@ export function UrgencyStats() {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.to(".clock-hand", {
-          rotation: 360,
-          svgOrigin: "20 20",
-          duration: 39,
-          repeat: -1,
-          ease: "none",
-        });
-
         gsap.to(".sparkline-bars rect", {
           scaleY: 1.08,
           transformOrigin: "bottom",
@@ -143,12 +108,6 @@ export function UrgencyStats() {
           stagger: { each: 0.15, yoyo: true, repeat: -1 },
           ease: "sine.inOut",
         });
-      });
-
-      gsap.from(".percent-ring", {
-        scale: 0,
-        duration: 0.8,
-        ease: "back.out(1.7)",
       });
 
       return () => mm.revert();
@@ -176,7 +135,7 @@ export function UrgencyStats() {
                 // All four cards share one surface: the lead stat is already
                 // set apart by its wider column and larger number, so it does
                 // not need a fourth background colour to carry the emphasis.
-                className="flex flex-col gap-4 rounded-[10px] bg-white p-7"
+                className="flex flex-col gap-4 rounded-card bg-white p-7"
               >
                 <div className="flex items-center gap-3">
                   <Graphic />

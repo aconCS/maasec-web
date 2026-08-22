@@ -20,8 +20,8 @@ const speakerLogos: Record<string, string> = {
   Cuccibu: "/images/logos/cuccibu.svg",
 };
 
-export function Experts() {
-  const speakers = getSpeakers();
+export async function Experts() {
+  const speakers = await getSpeakers();
 
   return (
     <section className="bg-white px-6 py-22 md:px-14">
@@ -47,7 +47,7 @@ export function Experts() {
           <figure
             data-reveal
             style={{ ["--reveal-delay" as string]: "100ms" }}
-            className="grid aspect-[1.618/1] w-full overflow-hidden rounded-[10px] bg-white shadow-[0_12px_30px_rgba(13,36,56,.12)] sm:grid-cols-[38.2%_61.8%]"
+            className="grid aspect-[1.618/1] w-full overflow-hidden rounded-card bg-white shadow-[0_12px_30px_rgba(13,36,56,.12)] sm:grid-cols-[38.2%_61.8%]"
           >
             <div className="relative hidden items-center justify-center overflow-hidden bg-blue-100 sm:flex">
               <TestimonialBackdrop />

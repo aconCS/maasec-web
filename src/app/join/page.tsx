@@ -30,13 +30,13 @@ const process = [
   },
 ];
 
-export default function JoinPage() {
-  const teams = getJoinTeams();
+export default async function JoinPage() {
+  const teams = await getJoinTeams();
 
   return (
     <>
       <Nav />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <section className="px-6 pt-28 pb-28 md:px-14">
           <div className="mx-auto grid w-full max-w-[1240px] items-center gap-14 md:grid-cols-[1.1fr_1fr]">
             <div className="flex flex-col gap-8 py-6">

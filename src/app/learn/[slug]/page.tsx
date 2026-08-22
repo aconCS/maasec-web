@@ -11,8 +11,9 @@ import { LEARN_CATEGORY_COLOR } from "@/lib/learn";
 
 type Params = { slug: string };
 
-export function generateStaticParams(): Params[] {
-  return getLearnEntries().map((entry) => ({ slug: entry.slug }));
+export async function generateStaticParams(): Promise<Params[]> {
+  const entries = await getLearnEntries();
+  return entries.map((entry) => ({ slug: entry.slug }));
 }
 
 export async function generateMetadata({
@@ -21,7 +22,7 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const entry = getLearnEntry(slug);
+  const entry = await getLearnEntry(slug);
   if (!entry) return {};
   return {
     title: entry.title,
@@ -36,13 +37,13 @@ export default async function LearnEntryPage({
   params: Promise<Params>;
 }) {
   const { slug } = await params;
-  const entry = getLearnEntry(slug);
+  const entry = await getLearnEntry(slug);
   if (!entry) notFound();
 
   return (
     <>
       <Nav />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <article className="px-6 pt-28 pb-20 md:px-14">
           <div className="mx-auto flex max-w-[720px] flex-col gap-6">
             <Link

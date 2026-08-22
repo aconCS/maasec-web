@@ -60,7 +60,10 @@
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 14px;
-  --radius-xl: 22px;
+  /* The site's one card/photo radius — hero image, gallery tiles, stat
+     cards, and testimonial panels all converge here. Anything sized as a
+     "surface" (not a control) uses this, not an arbitrary value. */
+  --radius-card: 10px;
 
   /* --- Elevation: navy-tinted, never neutral black --- */
   --shadow-sm: 0 1px 2px rgba(17, 51, 87, 0.06);
@@ -79,7 +82,7 @@
 
   body {
     background: var(--color-canvas);
-    color: #000;
+    color: var(--color-gray-800);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
   }

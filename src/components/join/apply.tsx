@@ -11,10 +11,9 @@ import type { JoinTeam } from "@/lib/content";
 type Status = "idle" | "sending" | "done" | "error";
 
 /**
- * The site is a static export (GitHub Pages), so there is no server to post
- * to — applications go to a third-party form backend instead. Set this at
- * build time to the endpoint URL your provider gives you (Formspree,
- * Formspark, Basin, and similar all accept a plain JSON POST of the fields).
+ * The site is a static export, so there is no server to post to —
+ * applications go to the Cloudflare Worker in worker/ instead (see
+ * docs/deploy-cloudflare.md). Set this at build time to that Worker's URL.
  *
  * Left unset, the form is replaced by the direct-contact fallback rather than
  * rendering a submit button that silently drops every application.

@@ -20,7 +20,7 @@ const members = [
     name: "Andreas Constantinou",
     role: "3rd year, Computer Science",
     quote:
-      "I always wanted to compete in CTFs, but they looked too difficult. After joining a competition with MaaSec, I helped the CTF team achieve a top 3% international placement.",
+      "I always wanted to compete in CTFs, but they looked too difficult. After joining a competition with MaaSec, I helped the CTF team achieve a top 3% placement at THEM?!CTF.",
   },
   {
     name: "Theodotos Neokleous",
@@ -30,13 +30,13 @@ const members = [
   },
 ];
 
-export default function AboutPage() {
-  const teams = getJoinTeams();
+export default async function AboutPage() {
+  const teams = await getJoinTeams();
 
   return (
     <>
       <Nav />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <header className="mx-auto flex max-w-[840px] flex-col items-center gap-5 px-6 pt-24 pb-9 text-center">
           <h1 className="font-display text-[clamp(40px,6vw,72px)] leading-[1.02] font-extrabold tracking-[-0.04em] text-blue-900">
             Our story
@@ -44,7 +44,7 @@ export default function AboutPage() {
         </header>
 
         {/* Story card */}
-        <div className="mx-auto mb-16 max-w-[1160px] rounded-[25px] bg-blue-100 px-6 py-12 md:px-14">
+        <div className="mx-auto mb-16 max-w-[1160px] rounded-card bg-blue-100 px-6 py-12 md:px-14">
           <div className="grid items-center gap-16 md:grid-cols-2">
             <ImageSlot
               src="/images/gallery/team2.jpg"
@@ -153,7 +153,7 @@ export default function AboutPage() {
                   key={member.name}
                   data-reveal
                   style={{ ["--reveal-delay" as string]: `${i * 100}ms` }}
-                  className="flex flex-col gap-[18px] rounded-[20px] bg-white p-8"
+                  className="flex flex-col gap-[18px] rounded-card bg-white p-8"
                 >
                   <figcaption className="flex flex-col">
                     <span className="font-display text-sm leading-tight font-semibold text-blue-900">

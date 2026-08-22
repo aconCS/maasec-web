@@ -1,0 +1,74 @@
+[
+  {
+    "slug": "guest-talk-farzan-karimi-moderna",
+    "title": "Guest Talk: Farzan Karimi (Moderna)",
+    "content": "<p>A digital talk on hacking stories from tech giants — including the FIFA coin<br />\nhack — plus student Q&A on standing out for big tech and using AI in<br />\ncybersecurity. Free pizza and iced drinks.</p>\n",
+    "eventDate": "2026-05-28",
+    "eventTime": "17:45",
+    "location": "Room C0.008 (FSE)",
+    "category": "Workshop",
+    "status": null,
+    "result": "Talk and Q&A with Farzan Karimi, Chief Security Officer at Moderna, on high-profile hacking stories and breaking into big tech.",
+    "signupUrl": null
+  },
+  {
+    "slug": "guest-talk-ivan-frantic-google-project-zero",
+    "title": "Guest Talk: Ivan Frantic (Google Project Zero)",
+    "content": "<p>A digital talk covering real-world security holes found in practice, his<br />\nProject Zero research, and student Q&A on breaking into FAANG cybersecurity.<br />\nFree pizza and drinks.</p>\n",
+    "eventDate": "2026-05-26",
+    "eventTime": "18:00",
+    "location": "Room C0.008 (FSE)",
+    "category": "Workshop",
+    "status": null,
+    "result": "Talk and Q&A with Ivan Frantic, Tech Lead at Google Project Zero, on real-world vulnerability research.",
+    "signupUrl": null
+  },
+  {
+    "slug": "board-elections",
+    "title": "Board Elections",
+    "content": "<p>Candidates presented themselves, then voting opened to all members. Open to<br />\nanyone interested in joining the board.</p>\n",
+    "eventDate": "2026-04-20",
+    "eventTime": "TBA",
+    "location": "TBA",
+    "category": "Community",
+    "status": null,
+    "result": "Candidates presented to the club and members voted in the new board.",
+    "signupUrl": "https://forms.gle/KQFDKjcTXK5kM3eT9"
+  },
+  {
+    "slug": "maasec-picnic",
+    "title": "MaaSec Picnic",
+    "content": "<p>The one MaaSec event that doesn’t happen in a locked room. Snacks, blankets,<br />\nand board games at Stadspark.</p>\n",
+    "eventDate": "2026-04-02",
+    "eventTime": "16:00",
+    "location": "Stadspark",
+    "category": "Community",
+    "status": null,
+    "result": "An outdoor social at Stadspark — snacks, blankets, and board games with the club.",
+    "signupUrl": null
+  },
+  {
+    "slug": "guest-lecture-ransomware-recovery",
+    "title": "Guest Lecture: Ransomware & Recovery",
+    "content": "<p>Bart van Bavel (ICTS) broke down how ransomware incidents occur and spread,<br />\npractical response and recovery steps, and lessons for strengthening<br />\nprevention.</p>\n",
+    "eventDate": "2026-02-10",
+    "eventTime": "18:00",
+    "location": "Room C2.017 (FSE)",
+    "category": "Workshop",
+    "status": null,
+    "result": "Guest lecture with Bart van Bavel (ICTS) on how ransomware incidents unfold and how organisations recover.",
+    "signupUrl": null
+  },
+  {
+    "slug": "bug-bounty-crew-registrations",
+    "title": "Bug Bounty Crew Registrations",
+    "content": "<p>Open call to join the bug bounty group — no experience required. Sign-ups<br />\nclosed February 10, 2026.</p>\n",
+    "eventDate": "2026-02-10",
+    "eventTime": "Deadline",
+    "location": "Online",
+    "category": "Bug Bounty",
+    "status": null,
+    "result": "Registrations opened for the bug bounty crew, open to newcomers and experienced hunters alike; sign-ups closed February 10.",
+    "signupUrl": "https://forms.gle/S4qqWpoJ2Zm69GH46"
+  }
+]

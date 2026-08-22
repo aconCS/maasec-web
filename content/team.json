@@ -1,39 +1,70 @@
-[
-  {
-    "id": "board",
-    "eyebrow": "Leadership",
-    "title": "Our board",
-    "blurb": "Four people keeping the organisation running, the University happy, and the teams winning.",
-    "surface": "blue",
-    "members": [
-      { "name": "Luka Toplak", "role": "President", "photo": "/images/board/luka.jpg" },
-      { "name": "Theodotos Neokleous", "role": "Vice President", "photo": "/images/board/theo.jpg" },
-      { "name": "Ivan Borysov", "role": "Treasurer", "photo": "/images/board/ivan.png" },
-      { "name": "Andreas Constantinou", "role": "Secretary", "photo": "/images/board/andreas.png" }
-    ]
-  },
-  {
-    "id": "ctf",
-    "eyebrow": "Competition",
-    "title": "CTF team",
-    "blurb": "The squad that competes internationally as MaaSec, and trains the next.",
-    "surface": "white",
-    "roles": ["Captain", "Pwn & reversing", "Web & crypto", "Forensics", "OSINT"]
-  },
-  {
-    "id": "marketing",
-    "eyebrow": "Community",
-    "title": "Marketing team",
-    "blurb": "Events, socials, and outreach that keep the labs full.",
-    "surface": "blue",
-    "roles": ["Content & design", "Events", "Socials", "Partnerships"]
-  },
-  {
-    "id": "consultancy",
-    "eyebrow": "Practice",
-    "title": "Consultancy team",
-    "blurb": "Supervised security reviews for organisations in the region.",
-    "surface": "white",
-    "roles": ["Lead", "Web assessment", "Reporting"]
-  }
-]
+{
+  "groups": [
+    {
+      "title": "Our board",
+      "eyebrow": "Leadership",
+      "groupId": "board",
+      "blurb": "Four people keeping the organisation running, the University happy, and the teams winning.",
+      "surface": "blue",
+      "roles": null,
+      "order": 0
+    },
+    {
+      "title": "CTF team",
+      "eyebrow": "Competition",
+      "groupId": "ctf",
+      "blurb": "The squad that competes internationally as MaaSec, and trains the next.",
+      "surface": "white",
+      "roles": "PWN\nReverse Engineering\nWeb Exploitation\nCryptography\nForensics\nOSINT",
+      "order": 1
+    },
+    {
+      "title": "Marketing team",
+      "eyebrow": "Community",
+      "groupId": "marketing",
+      "blurb": "Events, socials, and outreach that keep the labs full.",
+      "surface": "blue",
+      "roles": "Content & design\nEvents\nSocials\nPartnerships",
+      "order": 2
+    },
+    {
+      "title": "Consultancy team",
+      "eyebrow": "Practice",
+      "groupId": "consultancy",
+      "blurb": "Supervised security reviews for organisations in the region.",
+      "surface": "white",
+      "roles": "Lead\nWeb assessment\nReporting",
+      "order": 3
+    }
+  ],
+  "members": [
+    {
+      "title": "Luka Toplak",
+      "role": "President",
+      "groupId": "board",
+      "order": 0,
+      "photo": "/images/board/luka.jpg"
+    },
+    {
+      "title": "Theodotos Neokleous",
+      "role": "Vice President",
+      "groupId": "board",
+      "order": 1,
+      "photo": "/images/board/theo.jpg"
+    },
+    {
+      "title": "Ivan Borysov",
+      "role": "Treasurer",
+      "groupId": "board",
+      "order": 2,
+      "photo": "/images/board/ivan.png"
+    },
+    {
+      "title": "Andreas Constantinou",
+      "role": "Secretary",
+      "groupId": "board",
+      "order": 3,
+      "photo": "/images/board/andreas.png"
+    }
+  ]
+}

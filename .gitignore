@@ -47,3 +47,6 @@ cloudflare-env.d.ts
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# wordpress (local CMS) — .app-password holds a live credential
+wordpress/.app-password

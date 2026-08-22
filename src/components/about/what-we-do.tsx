@@ -52,7 +52,7 @@ export function WhatWeDo({ teams }: { teams: JoinTeam[] }) {
                 // basis-0 makes the whole row free space, so the grow ratios
                 // actually set the widths — with content-driven basis the
                 // panels come out near-identical no matter what they grow by.
-                className={`group relative flex cursor-pointer flex-col justify-between overflow-hidden rounded-[14px] p-7 text-left transition-[flex-grow,background-color] duration-[420ms] ease-[var(--ease-out-soft)] lg:min-w-0 lg:basis-0 ${
+                className={`group relative flex cursor-pointer flex-col justify-between overflow-hidden rounded-card p-7 text-left transition-[flex-grow,background-color] duration-[420ms] ease-[var(--ease-out-soft)] lg:min-w-0 lg:basis-0 ${
                   // No hover background: hovering already promotes the panel
                   // to active (onMouseEnter), so a separate hover tint would
                   // never be visible for more than a frame.

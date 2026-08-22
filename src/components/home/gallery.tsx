@@ -39,7 +39,7 @@ function MarqueeRow({
           photos.map((photo, i) => (
             <div
               key={`${setIndex}-${photo.src}-${i}`}
-              className="relative h-[200px] w-[280px] shrink-0 overflow-hidden rounded-[10px] md:h-[240px] md:w-[340px]"
+              className="relative h-[200px] w-[280px] shrink-0 overflow-hidden rounded-card md:h-[240px] md:w-[340px]"
             >
               <Image
                 src={photo.src}

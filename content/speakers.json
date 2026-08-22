@@ -1,1 +1,8 @@
-["Google", "Microsoft", "Moderna", "EA", "Boeing", "Cuccibu"]
+[
+  { "title": "Google", "order": 0 },
+  { "title": "Microsoft", "order": 1 },
+  { "title": "Moderna", "order": 2 },
+  { "title": "EA", "order": 3 },
+  { "title": "Boeing", "order": 4 },
+  { "title": "Cuccibu", "order": 5 }
+]

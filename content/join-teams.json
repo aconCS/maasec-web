@@ -1,0 +1,23 @@
+[
+  {
+    "title": "CTF team",
+    "teamId": "ctf",
+    "tagline": "We compete internationally as MaaSec and train anyone starting from zero.",
+    "benefits": "Mentorship from senior players\nFrom local challenges to international CTFs\nA direct line to consultancy work",
+    "order": 0
+  },
+  {
+    "title": "Consultancy team",
+    "teamId": "consultancy",
+    "tagline": "Deliver supervised security reviews for real organisations in the region.",
+    "benefits": "Real deliverables for your CV\nSenior-reviewed work\nA direct pipeline to partner companies",
+    "order": 1
+  },
+  {
+    "title": "Marketing team",
+    "teamId": "marketing",
+    "tagline": "Run events, socials, and outreach that grow our community and keep our labs full.",
+    "benefits": "A portfolio of real campaigns\nDirect access to partner organisations\nFlexible hours around your schedule",
+    "order": 2
+  }
+]
