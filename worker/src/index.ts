@@ -33,7 +33,7 @@ type Env = {
   };
 };
 
-const TEAM_IDS = ["ctf", "consultancy", "marketing"] as const;
+const TEAM_IDS = ["ctf", "consultancy", "marketing", "swe"] as const;
 type TeamId = (typeof TEAM_IDS)[number];
 
 const RATE_LIMIT_MAX = 5;

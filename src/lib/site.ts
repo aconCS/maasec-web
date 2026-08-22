@@ -27,5 +27,5 @@ export const navLinks = [
 ] as const;
 
 /** The teams a member can apply to. Keep ids in sync with content/teams. */
-export const teamIds = ["ctf", "consultancy", "marketing"] as const;
+export const teamIds = ["ctf", "consultancy", "marketing", "swe"] as const;
 export type TeamId = (typeof teamIds)[number];

@@ -48,6 +48,11 @@ export function ScrollRail({
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  // Thumb size/position for the drag indicator below the rail — visibleRatio
+  // is also what decides whether the rail overflows at all, so the
+  // indicator (and drag-to-scroll affordance) simply don't render when the
+  // content already fits.
+  const [thumb, setThumb] = useState({ visibleRatio: 1, offsetRatio: 0 });
 
   useEffect(() => {
     const el = scrollerRef.current;
@@ -56,6 +61,10 @@ export function ScrollRail({
     const updateEdges = () => {
       setCanScrollLeft(el.scrollLeft > 4);
       setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+      setThumb({
+        visibleRatio: el.clientWidth / el.scrollWidth,
+        offsetRatio: el.scrollLeft / el.scrollWidth,
+      });
     };
 
     updateEdges();
@@ -66,6 +75,9 @@ export function ScrollRail({
       window.removeEventListener("resize", updateEdges);
     };
   }, []);
+
+  const overflows = thumb.visibleRatio < 0.999;
+  const thumbWidthPct = Math.max(thumb.visibleRatio * 100, 15);
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     const el = scrollerRef.current;
@@ -148,6 +160,24 @@ export function ScrollRail({
             visible={canScrollRight}
           />
         </>
+      )}
+
+      {/* Drag indicator: a mini scrollbar-style track/thumb that makes the
+          row's draggability obvious at a glance, since overflow-x-auto gives
+          no such affordance on its own. Hidden when nothing overflows. */}
+      {overflows && (
+        <div
+          aria-hidden
+          className="relative mx-auto mt-2.5 h-[3px] w-16 rounded-full bg-blue-900/10"
+        >
+          <div
+            className="absolute inset-y-0 rounded-full bg-blue-900/40 transition-[left,width] duration-100 ease-out"
+            style={{
+              width: `${thumbWidthPct}%`,
+              left: `${(thumb.offsetRatio / (1 - thumb.visibleRatio)) * (100 - thumbWidthPct)}%`,
+            }}
+          />
+        </div>
       )}
     </div>
   );

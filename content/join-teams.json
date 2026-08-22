@@ -4,6 +4,7 @@
     "teamId": "ctf",
     "tagline": "We compete internationally as MaaSec and train anyone starting from zero.",
     "benefits": "Mentorship from senior players\nFrom local challenges to international CTFs\nA direct line to consultancy work",
+    "open": true,
     "order": 0
   },
   {
@@ -11,6 +12,7 @@
     "teamId": "consultancy",
     "tagline": "Deliver supervised security reviews for real organisations in the region.",
     "benefits": "Real deliverables for your CV\nSenior-reviewed work\nA direct pipeline to partner companies",
+    "open": true,
     "order": 1
   },
   {
@@ -18,6 +20,15 @@
     "teamId": "marketing",
     "tagline": "Run events, socials, and outreach that grow our community and keep our labs full.",
     "benefits": "A portfolio of real campaigns\nDirect access to partner organisations\nFlexible hours around your schedule",
+    "open": true,
     "order": 2
+  },
+  {
+    "title": "Software Development",
+    "teamId": "swe",
+    "tagline": "Ship real software for real users — right now, that's Almo, a study app for medicine students.",
+    "benefits": "Own real features on a shipped product\nSmall team, direct impact\nFlexible hours around your schedule",
+    "open": true,
+    "order": 3
   }
 ]

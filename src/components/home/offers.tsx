@@ -19,6 +19,11 @@ const offers = [
     title: "Consultancy",
     desc: "Supervised security reviews for organisations in the region. Make real impact and show something concrete on your CV.",
   },
+  {
+    num: "04",
+    title: "Software Development",
+    desc: "Currently building Almo, a Duolingo-style app helping medicine students study smarter. Join a small team shipping real, used software.",
+  },
 ];
 
 export function Offers() {

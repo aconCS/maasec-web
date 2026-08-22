@@ -90,9 +90,11 @@ export default async function TeamPage() {
                   gapClassName="gap-6"
                   ariaLabel={`${group.title} members`}
                 >
-                  {group.members.map((member) => (
+                  {group.members.map((member) => {
+                    const isPlaceholder = member.photo === "/logo-mark-dark.svg";
+                    return (
                     <div
-                      key={member.role}
+                      key={`${member.name}-${member.role}`}
                       className="flex w-[164px] flex-none snap-start flex-col gap-3.5 sm:w-[188px]"
                     >
                       <ImageSlot
@@ -101,6 +103,14 @@ export default async function TeamPage() {
                         label={`Photo — ${member.role}`}
                         radius={10}
                         className="aspect-square w-full"
+                        fit={isPlaceholder ? "contain" : "cover"}
+                        background={
+                          isPlaceholder
+                            ? group.surface === "blue"
+                              ? "bg-white"
+                              : "bg-blue-100"
+                            : undefined
+                        }
                       />
                       <div className="flex flex-col gap-0.5">
                         <span className="font-display text-base leading-tight font-semibold text-blue-900">
@@ -111,7 +121,28 @@ export default async function TeamPage() {
                         </span>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
+                  {!!group.memberCount && group.memberCount > group.members.length && (
+                    <div className="flex w-[164px] flex-none snap-start flex-col gap-3.5 sm:w-[188px]">
+                      <div
+                        className={`flex aspect-square w-full items-center justify-center rounded-[10px] border ${
+                          group.surface === "blue"
+                            ? "border-blue-900/15 bg-white"
+                            : "border-blue-200 bg-blue-100"
+                        }`}
+                      >
+                        <span className="font-display text-[28px] leading-none font-extrabold tracking-[-0.02em] text-blue-900">
+                          +{group.memberCount - group.members.length}
+                        </span>
+                      </div>
+                      <div className="flex flex-col gap-0.5">
+                        <span className="font-display text-base leading-tight font-semibold text-blue-900">
+                          contributing members
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </ScrollRail>
               ) : group.roles ? (
                 /* Teams we don't list by name show the disciplines they cover

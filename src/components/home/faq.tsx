@@ -21,7 +21,7 @@ const faqs = [
   },
   {
     q: "Which teams can I join?",
-    a: "CTF, Marketing, or Consultancy — each with mentorship from senior members. Pick one on the Join page.",
+    a: "CTF, Marketing, Consultancy, or Software Development — each with mentorship from senior members. Pick one on the Join page.",
   },
   {
     q: "What is ACM, and what does it mean that MaaSec is an ACM chapter?",

@@ -169,6 +169,11 @@ export type TeamGroup = {
   surface: "white" | "blue";
   members?: Member[];
   roles?: string[];
+  /** Member count shown next to the section heading. Derived from
+   * `members.length` when the group lists named members; otherwise read
+   * from the group's own `memberCount` field (role-only groups have no
+   * named members to count). Omitted entirely when neither is set. */
+  memberCount?: number;
 };
 
 export type JoinTeam = {
@@ -176,6 +181,9 @@ export type JoinTeam = {
   title: string;
   tagline: string;
   benefits: string[];
+  /** False when the team isn't currently recruiting — the Join form shows a
+   * "not accepting applications" message instead of the form for it. */
+  open: boolean;
 };
 
 type RawTeamGroup = {
@@ -185,6 +193,7 @@ type RawTeamGroup = {
   blurb: string | null;
   surface: string | null;
   roles: string | null;
+  memberCount?: number | null;
   order: number;
 };
 
@@ -226,6 +235,10 @@ export async function getTeamGroups(): Promise<TeamGroup[]> {
         surface: (g.surface ?? "white") as "white" | "blue",
         members: groupMembers.length ? groupMembers : undefined,
         roles: roles.length ? roles : undefined,
+        // An explicit total (e.g. CTF's real headcount vs. its short list of
+        // named members) always wins; otherwise fall back to counting the
+        // named members actually listed.
+        memberCount: g.memberCount ?? (groupMembers.length || undefined),
       };
     });
 }
@@ -235,6 +248,7 @@ type RawJoinTeam = {
   teamId: string | null;
   tagline: string | null;
   benefits: string | null;
+  open?: boolean;
   order: number;
 };
 
@@ -249,6 +263,7 @@ export async function getJoinTeams(): Promise<JoinTeam[]> {
         .split("\n")
         .map((b) => b.trim())
         .filter(Boolean),
+      open: t.open ?? true,
     }));
 }
 

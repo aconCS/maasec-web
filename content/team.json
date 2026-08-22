@@ -2,7 +2,6 @@
   "groups": [
     {
       "title": "Our board",
-      "eyebrow": "Leadership",
       "groupId": "board",
       "blurb": "Four people keeping the organisation running, the University happy, and the teams winning.",
       "surface": "blue",
@@ -11,30 +10,39 @@
     },
     {
       "title": "CTF team",
-      "eyebrow": "Competition",
       "groupId": "ctf",
       "blurb": "The squad that competes internationally as MaaSec, and trains the next.",
-      "surface": "white",
+      "surface": "blue",
       "roles": "PWN\nReverse Engineering\nWeb Exploitation\nCryptography\nForensics\nOSINT",
+      "memberCount": 26,
       "order": 1
     },
     {
-      "title": "Marketing team",
-      "eyebrow": "Community",
-      "groupId": "marketing",
-      "blurb": "Events, socials, and outreach that keep the labs full.",
-      "surface": "blue",
-      "roles": "Content & design\nEvents\nSocials\nPartnerships",
-      "order": 2
-    },
-    {
       "title": "Consultancy team",
-      "eyebrow": "Practice",
       "groupId": "consultancy",
       "blurb": "Supervised security reviews for organisations in the region.",
       "surface": "white",
       "roles": "Lead\nWeb assessment\nReporting",
+      "memberCount": null,
+      "order": 2
+    },
+    {
+      "title": "Software Development",
+      "groupId": "swe",
+      "blurb": "MaaSec's software development team, currently building Almo — an interactive app helping medicine students study smarter.",
+      "surface": "white",
+      "roles": null,
+      "memberCount": 3,
       "order": 3
+    },
+    {
+      "title": "Marketing team",
+      "groupId": "marketing",
+      "blurb": "Events, socials, and outreach that keep the labs full.",
+      "surface": "blue",
+      "roles": "Content & design\nEvents\nSocials\nPartnerships",
+      "memberCount": 1,
+      "order": 4
     }
   ],
   "members": [
@@ -64,6 +72,41 @@
       "role": "Secretary",
       "groupId": "board",
       "order": 3,
+      "photo": "/images/board/andreas.png"
+    },
+    {
+      "title": "Francesco",
+      "role": "Captain — Web Exploitation",
+      "groupId": "ctf",
+      "order": 0,
+      "photo": "/logo-mark-dark.svg"
+    },
+    {
+      "title": "Theodotos Neokleous",
+      "role": "Web Exploitation",
+      "groupId": "ctf",
+      "order": 1,
+      "photo": "/images/board/theo.jpg"
+    },
+    {
+      "title": "Vlad Manolescu",
+      "role": "OSINT",
+      "groupId": "ctf",
+      "order": 2,
+      "photo": "/logo-mark-dark.svg"
+    },
+    {
+      "title": "Alexia-Mădălina Cîrstea",
+      "role": "OSINT",
+      "groupId": "ctf",
+      "order": 3,
+      "photo": "/logo-mark-dark.svg"
+    },
+    {
+      "title": "Andreas Constantinou",
+      "role": "Forensics",
+      "groupId": "ctf",
+      "order": 4,
       "photo": "/images/board/andreas.png"
     }
   ]

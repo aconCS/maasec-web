@@ -39,7 +39,7 @@ export function Apply({ teams }: { teams: JoinTeam[] }) {
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!APPLY_ENDPOINT) return;
+    if (!APPLY_ENDPOINT || !active.open) return;
 
     const form = event.currentTarget;
     const data = new FormData(form);
@@ -112,13 +112,18 @@ export function Apply({ teams }: { teams: JoinTeam[] }) {
                   setActiveId(team.id as TeamId);
                   setStatus("idle");
                 }}
-                className={`cursor-pointer border-b-2 py-4 font-display text-xl leading-none font-bold tracking-[-0.025em] transition-[color,border-color] duration-[160ms] ${
+                className={`flex cursor-pointer items-baseline gap-2 border-b-2 py-4 font-display text-xl leading-none font-bold tracking-[-0.025em] transition-[color,border-color] duration-[160ms] ${
                   selected
                     ? "border-green-400 text-white"
                     : "border-transparent text-blue-300 hover:text-blue-100"
                 }`}
               >
                 {team.title}
+                {!team.open && (
+                  <span className="font-mono text-[10px] leading-none font-semibold tracking-[0.05em] text-blue-300 uppercase">
+                    Full
+                  </span>
+                )}
               </button>
             );
           })}
@@ -167,8 +172,22 @@ export function Apply({ teams }: { teams: JoinTeam[] }) {
                   You&rsquo;re in the queue.
                 </span>
                 <span className="font-body text-[15px] leading-relaxed text-blue-200">
-                  A team lead will reach out within a couple of days.
+                  A team lead will reach out soon.
                 </span>
+              </div>
+            ) : !active.open ? (
+              <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-1.5">
+                  <span className="font-display text-[22px] leading-tight font-bold text-white">
+                    {active.title} is full.
+                  </span>
+                  <span className="font-body text-[15px] leading-relaxed text-blue-200">
+                    We&rsquo;re not taking new applications for this team right
+                    now. Check back later, or reach out and we&rsquo;ll let you
+                    know when a spot opens up.
+                  </span>
+                </div>
+                <DirectContact label="Get notified when spots open:" />
               </div>
             ) : !APPLY_ENDPOINT ? (
               <div className="flex flex-col gap-5">

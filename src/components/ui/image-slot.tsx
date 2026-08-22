@@ -11,6 +11,8 @@ export function ImageSlot({
   shape = "rounded",
   radius = 10,
   className = "",
+  background,
+  fit = "cover",
 }: {
   src?: string;
   alt?: string;
@@ -18,6 +20,12 @@ export function ImageSlot({
   shape?: "rounded" | "circle" | "rect";
   radius?: number;
   className?: string;
+  /** Fill colour behind the image — for `fit="contain"` marks/logos that
+   * don't cover their own frame and need a surface to sit on. */
+  background?: string;
+  /** `cover` crops to fill (photos); `contain` fits the whole asset with
+   * padding, for logo marks used as placeholders. */
+  fit?: "cover" | "contain";
 }) {
   const rounded =
     shape === "circle" ? "9999px" : shape === "rect" ? "0px" : `${radius}px`;
@@ -25,10 +33,16 @@ export function ImageSlot({
   if (src) {
     return (
       <div
-        className={`relative overflow-hidden ${className}`}
+        className={`relative overflow-hidden ${background ?? ""} ${className}`}
         style={{ borderRadius: rounded }}
       >
-        <Image src={src} alt={alt} fill className="object-cover" />
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          draggable={false}
+          className={`${fit === "contain" ? "object-contain p-[18%]" : "object-cover"} select-none`}
+        />
       </div>
     );
   }
