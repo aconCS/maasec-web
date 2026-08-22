@@ -1,5 +1,5 @@
 {
-  // Cloudflare Worker backing the join form on the static GitHub Pages site.
+  // Cloudflare Worker backing the join form on the static Cloudflare Pages site.
   // Deploy from this directory:  npx wrangler deploy
   "$schema": "../node_modules/wrangler/config-schema.json",
   "name": "maasec-apply",
