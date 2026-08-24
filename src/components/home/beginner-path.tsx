@@ -1,36 +1,31 @@
 import type { ReactNode } from "react";
 import { ButtonLink } from "@/components/ui/button";
 
-export type BeginnerPathStep = { num: string; title: string; body: string };
+export type BeginnerPathStep = {
+  num: string;
+  title: string;
+  body: string;
+};
 
-/**
- * A headline + CTA opposite a numbered path — reused wherever the pitch is
- * "here's exactly how you start," not just "here's why to join." The
- * numbers are load-bearing here (a real first/second/third), unlike the
- * old 01-04 markers on the Offers accordion, which numbered four parallel
- * options rather than a sequence.
- */
 export function BeginnerPath({
   headingId,
   heading,
   buttonHref,
   buttonLabel,
   steps,
+  className,
 }: {
-  /** Applied to the heading and referenced by the section's
-   *  aria-labelledby, matching how every other section on a page like
-   *  /ctf names itself. Omit where the page doesn't label sections this
-   *  way (the homepage doesn't). */
   headingId?: string;
   heading: ReactNode;
   buttonHref: string;
   buttonLabel: string;
   steps: BeginnerPathStep[];
+  className?: string;
 }) {
   return (
     <section
       aria-labelledby={headingId}
-      className="bg-blue-100 px-6 py-14 md:px-14"
+      className={`px-6 py-14 md:px-14 ${className ?? "bg-blue-100"}`}
     >
       <div className="mx-auto grid max-w-[1200px] items-center gap-16 md:grid-cols-2 md:gap-22">
         <div className="flex flex-col items-start gap-6">
@@ -40,6 +35,7 @@ export function BeginnerPath({
           >
             {heading}
           </h3>
+
           <ButtonLink href={buttonHref} size="lg">
             {buttonLabel}
           </ButtonLink>
@@ -51,10 +47,12 @@ export function BeginnerPath({
               <span className="pt-1 font-mono text-base leading-none font-medium text-blue-600">
                 {step.num}
               </span>
+
               <div className="flex flex-col gap-1.5">
                 <span className="font-display text-[22px] leading-[1.35] font-semibold text-blue-900">
                   {step.title}
                 </span>
+
                 <span className="font-body text-[17px] leading-relaxed text-gray-700">
                   {step.body}
                 </span>

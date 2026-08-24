@@ -1,4 +1,4 @@
-import { Folder, FolderGit2 } from "lucide-react";
+import { Folder} from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { BeginnerPath } from "@/components/home/beginner-path";
@@ -221,67 +221,76 @@ export default async function CtfPage() {
         </section>
 
         {/* --- The work ---------------------------------------------------
-            No persuasion copy: the repo is the proof, so the section is
-            built to send people to it, not to argue on its behalf. The
-            heading states the one verifiable number; the list below is the
-            actual folder names from the repo, not a curated highlight reel.
-            Reveals with the page's existing scroll-in mechanism (see
-            components/site/reveal.tsx) rather than a bespoke animation. */}
+            The repository is the proof of work: a short statement and CTA
+            on the left, the actual competition folders on the right. */}
         <section
           aria-labelledby="work-heading"
           className="bg-blue-100 px-6 py-22 md:px-14"
         >
-          <div className="mx-auto flex max-w-[1160px] flex-col gap-9">
-            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between md:gap-10">
-              <h2
-                id="work-heading"
-                className="max-w-[480px] font-display text-[clamp(30px,3.6vw,48px)] leading-[1.08] font-bold tracking-[-0.03em] text-blue-900 text-balance"
-              >
-                {writeups.count} competitions. Every one published.
-              </h2>
+          <div className="mx-auto grid max-w-[1160px] gap-12 md:grid-cols-[0.9fr_1.1fr] md:gap-20">
+            {/* Left */}
+            <div className="flex flex-col items-start">
+              <div className="flex flex-col gap-4">
+                <h2
+                  id="work-heading"
+                  className="max-w-[480px] font-display text-[clamp(30px,3.6vw,48px)] leading-[1.08] font-bold tracking-[-0.03em] text-blue-900 text-balance"
+                >
+                  See how we solve problems
+                </h2>
 
-              <a
-                href={writeups.url}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="group relative flex flex-none items-center gap-3 overflow-hidden rounded-[10px] bg-blue-900 px-7 py-5 transition-colors duration-200 hover:bg-blue-800"
-              >
-                <FolderGit2
-                  aria-hidden
-                  strokeWidth={1.25}
-                  className="pointer-events-none absolute -right-3 -bottom-3 h-20 w-20 text-white/10 transition-transform duration-200 group-hover:scale-105"
-                />
-                <FolderGit2
-                  aria-hidden
-                  className="relative h-5 w-5 flex-none text-blue-200"
-                />
-                <span className="relative font-display text-[15px] font-semibold text-white">
-                  View the writeups on GitHub
-                </span>
-              </a>
+                <p className="max-w-[440px] font-body text-base leading-relaxed text-gray-700">
+                  Our solutions are published openly — from the challenges we face
+                  during competitions to the techniques we use to solve them.
+                </p>
+              </div>
+
+              <div className="mt-auto flex flex-col items-start gap-4 pt-10">
+                <a
+                  href={writeups.url}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  aria-label="View MaaSec CTF writeups on GitHub"
+                  className="group flex items-center gap-3 rounded-[10px] bg-[#24292f] px-6 py-4 transition-colors duration-200 hover:bg-[#1f2328]"
+                >
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    className="h-5 w-5 flex-none fill-white"
+                  >
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.084-.73.084-.73 1.205.085 1.84 1.237 1.84 1.237 1.07 1.835 2.809 1.305 3.495.998.108-.776.418-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23A11.5 11.5 0 0 1 12 5.803c1.02.005 2.045.138 3.003.404 2.28-1.552 3.285-1.23 3.285-1.23.65 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.37.81 1.1.81 2.22 0 1.605-.015 2.895-.015 3.285 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12Z" />
+                  </svg>
+
+                  <span className="font-display text-[15px] font-semibold text-white">
+                    View on GitHub
+                  </span>
+                </a>
+
+                <p className="font-mono text-[11px] tracking-[0.14em] text-gray-600 uppercase">
+                  Last updated {monthYear(writeups.lastPushedAt)}
+                </p>
+              </div>
             </div>
 
-            <ul className="grid grid-cols-2 gap-x-8 gap-y-3 border-t border-blue-200 pt-6 sm:grid-cols-3">
-              {writeups.named.map((name, i) => (
-                <li
-                  key={name}
-                  data-reveal
-                  style={{ ["--reveal-delay" as string]: `${i * 30}ms` }}
-                  className="flex items-center gap-2 font-mono text-[13.5px] text-blue-900"
-                >
-                  <Folder
-                    aria-hidden
-                    className="h-3.5 w-3.5 flex-none text-blue-400"
-                    strokeWidth={2}
-                  />
-                  {name}
-                </li>
-              ))}
-            </ul>
-
-            <p className="font-mono text-[11px] tracking-[0.14em] text-gray-600 uppercase">
-              Last pushed {monthYear(writeups.lastPushedAt)}
-            </p>
+            {/* Right */}
+            <div className="border-t border-blue-200 pt-5">
+              <ul className="grid grid-cols-1 gap-0 sm:grid-cols-2">
+                {writeups.named.map((name, i) => (
+                  <li
+                    key={name}
+                    data-reveal
+                    style={{ ["--reveal-delay" as string]: `${i * 30}ms` }}
+                    className="flex items-center gap-3 border-b border-blue-200 py-4 font-mono text-[13.5px] text-blue-900"
+                  >
+                    <Folder
+                      aria-hidden
+                      className="h-4 w-4 flex-none text-blue-400"
+                      strokeWidth={1.75}
+                    />
+                    {name}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </section>
 
@@ -301,10 +310,10 @@ export default async function CtfPage() {
                 id="glossary-heading"
                 className="font-display text-[clamp(30px,3.6vw,48px)] leading-[1.08] font-bold tracking-[-0.03em] text-blue-900 text-balance"
               >
-                The whole board
+                Building blocks of CTF
               </h2>
               <p className="font-body text-base leading-relaxed text-gray-700">
-                Every CTF challenge falls into one of these.
+                Each category demands a different set of skills, techniques, and ways of thinking.
               </p>
             </div>
 
@@ -329,6 +338,36 @@ export default async function CtfPage() {
           </div>
         </section>
 
+        <BeginnerPath
+          className="bg-white"
+          heading={
+            <>
+              CTFs look impossible from the outside.
+              <br />
+              We&rsquo;re bringing you in.
+            </>
+          }
+          buttonHref="/events"
+          buttonLabel="Start at your first lab"
+          steps={[
+            {
+              num: "01",
+              title: "Show up to a lab",
+              body: "No prep needed, bring a laptop.",
+            },
+            {
+              num: "02",
+              title: "Learn the tools",
+              body: "A mentor will guide you through the process.",
+            },
+            {
+              num: "03",
+              title: "Solve your first flag",
+              body: "It only gets better from here.",
+            },
+          ]}
+        />
+
         {/* --- CTF calendar -------------------------------------------------
             Distinct from the weekly training sessions on /events: this is
             specifically which CTFs the team has entered next. Nothing is
@@ -339,16 +378,22 @@ export default async function CtfPage() {
             there rather than nowhere. */}
         <section
           aria-labelledby="upcoming-heading"
-          className="bg-blue-100 px-6 py-22 md:px-14"
+          className="bg-white px-6 py-22 md:px-14"
         >
           <div className="mx-auto flex max-w-[1160px] flex-col gap-10">
-            <div className="flex max-w-[640px] flex-col gap-3.5">
+            <div className="flex flex-col items-start gap-6 md:flex-row md:items-center">
               <h2
                 id="upcoming-heading"
                 className="font-display text-[clamp(30px,3.6vw,48px)] leading-[1.08] font-bold tracking-[-0.03em] text-blue-900 text-balance"
               >
                 CTF calendar
               </h2>
+
+              <div className="ml-auto shrink-0">
+                <ButtonLink href="/events" size="lg">
+                  View the calendar
+                </ButtonLink>
+              </div>
             </div>
 
             {ctfEvents.length > 0 ? (
@@ -361,68 +406,25 @@ export default async function CtfPage() {
                     <span className="font-display text-[15px] font-semibold text-blue-900">
                       {e.title}
                     </span>
+
                     <span className="font-mono text-[11px] tracking-[0.14em] text-gray-600 uppercase">
                       {new Date(e.date).toLocaleDateString("en-GB", {
                         day: "numeric",
                         month: "short",
                       })}
-                      {e.location ? ` · ${e.location}` : ""}
                     </span>
                   </li>
                 ))}
               </ul>
             ) : (
               <p className="max-w-[560px] font-body text-base leading-relaxed text-gray-700">
-                Nothing locked in yet for this semester — training itself
-                runs every week regardless.
+                Nothing locked in yet for this semester — training itself runs every
+                week regardless.
               </p>
             )}
-
-            <div>
-              <ButtonLink href="/events" size="lg">
-                View the calendar
-              </ButtonLink>
-            </div>
           </div>
         </section>
 
-        {/* --- How we recruit + join ---------------------------------------
-            Same headline+CTA-opposite-a-numbered-path pattern as the
-            homepage's BeginnerPath, reused rather than re-invented — but
-            the steps here are the actual join process (apply, get matched
-            with a mentor, compete), not a first-timer's lab visit. Facts
-            are the ones already established elsewhere on this page and in
-            content/join-teams.json: no entry test, mentorship from senior
-            players, local labs through to international CTFs. */}
-        <BeginnerPath
-          headingId="recruit-heading"
-          heading={
-            <>
-              No entry test.
-              <br />
-              No experience required.
-            </>
-          }
-          buttonHref="/join?team=ctf"
-          buttonLabel="Apply to the CTF team"
-          steps={[
-            {
-              num: "01",
-              title: "Apply, any semester",
-              body: "Intake is continuous — there's no cutoff to wait for.",
-            },
-            {
-              num: "02",
-              title: "Get matched with a mentor",
-              body: "A senior player walks you through your first competition.",
-            },
-            {
-              num: "03",
-              title: "Play for real",
-              body: "From weekly labs straight through to international CTFs.",
-            },
-          ]}
-        />
 
         {/* --- Pictures -------------------------------------------------- */}
         <section
@@ -462,8 +464,6 @@ export default async function CtfPage() {
                 src="/images/graphics/gallery-1.png"
                 alt="THEM?!CTF 2026 results"
                 radius={10}
-                fit="contain"
-                background="bg-white"
                 className="aspect-square"
               />
             </div>
