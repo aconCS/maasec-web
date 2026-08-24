@@ -13,21 +13,37 @@ gsap.registerPlugin(useGSAP);
  *
  * They reveal with a mask wipe rather than counting up: both are rankings,
  * and counting a 3rd place upward from zero would read backwards.
+ *
+ * The national placement is passed in from the CTFtime sync rather than
+ * written here — it was hardcoded once and was two seasons out of date by
+ * the time anyone noticed. See scripts/sync-ctftime.mjs.
  */
-const records = [
-  {
-    stat: "3rd",
-    label: "In the Netherlands 🇳🇱" ,
-    body: "Our CTF team's national ranking.",
-  },
-  {
-    stat: "47th",
-    label: "In an international Competition🌍",
-    body: "Top 4% placement in DownUnderCTF, out of 1,200+ teams.",
-  }
-];
+export function Achievements({
+  nationalPlace,
+  nationalNote,
+}: {
+  nationalPlace: string;
+  nationalNote: string;
+}) {
+  const records = [
+    {
+      stat: nationalPlace,
+      label: "In the Netherlands 🇳🇱",
+      body: nationalNote,
+    },
+    {
+      stat: "47th",
+      label: "In an international Competition🌍",
+      body: "Top 4% placement in DownUnderCTF, out of 1,200+ teams.",
+    },
+  ];
 
-export function Achievements() {
+  return <AchievementsLedger records={records} />;
+}
+
+type AchievementRecord = { stat: string; label: string; body: string };
+
+function AchievementsLedger({ records }: { records: AchievementRecord[] }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
 

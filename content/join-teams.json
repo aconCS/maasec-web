@@ -16,19 +16,11 @@
     "order": 1
   },
   {
-    "title": "Marketing team",
-    "teamId": "marketing",
-    "tagline": "Run events, socials, and outreach that grow our community and keep our labs full.",
-    "benefits": "A portfolio of real campaigns\nDirect access to partner organisations\nFlexible hours around your schedule",
-    "open": true,
-    "order": 2
-  },
-  {
     "title": "Software Development",
     "teamId": "swe",
-    "tagline": "Ship real software for real users — right now, that's Almo, a study app for medicine students.",
-    "benefits": "Own real features on a shipped product\nSmall team, direct impact\nFlexible hours around your schedule",
+    "tagline": "Ship real software for real users.",
+    "benefits": "Develop real features on real products\nSmall team, direct impact\nFlexible hours around your schedule",
     "open": true,
-    "order": 3
+    "order": 2
   }
 ]

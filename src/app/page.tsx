@@ -20,7 +20,34 @@ export default function HomePage() {
         <Mission />
         <Offers />
         <Gallery />
-        <BeginnerPath />
+        <BeginnerPath
+          heading={
+            <>
+              CTFs look impossible from the outside.
+              <br />
+              We&rsquo;re bringing you in.
+            </>
+          }
+          buttonHref="/events"
+          buttonLabel="Start at your first lab"
+          steps={[
+            {
+              num: "01",
+              title: "Show up to a lab",
+              body: "No prep needed, bring a laptop.",
+            },
+            {
+              num: "02",
+              title: "Learn the tools",
+              body: "A mentor will guide you through the process.",
+            },
+            {
+              num: "03",
+              title: "Solve your first flag",
+              body: "It only gets better from here.",
+            },
+          ]}
+        />
         <Experts />
         <Faq />
         <JoinCta />

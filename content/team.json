@@ -3,7 +3,7 @@
     {
       "title": "Our board",
       "groupId": "board",
-      "blurb": "Four people keeping the organisation running, the University happy, and the teams winning.",
+      "": "Four people keeping the organisation running, the University happy, and the teams winning.",
       "surface": "blue",
       "roles": null,
       "order": 0
@@ -20,27 +20,27 @@
     {
       "title": "Consultancy team",
       "groupId": "consultancy",
-      "blurb": "Supervised security reviews for organisations in the region.",
+      "blurb": "Supervised security reviews for organisations in the region. Students scope the engagement with the client and do the work; senior members review everything before it is delivered.",
       "surface": "white",
-      "roles": "Lead\nWeb assessment\nReporting",
+      "roles": null,
       "memberCount": null,
-      "order": 2
+      "order": 3
     },
     {
       "title": "Software Development",
       "groupId": "swe",
-      "blurb": "MaaSec's software development team, currently building Almo — an interactive app helping medicine students study smarter.",
+      "blurb": "MaaSec's software team, building real products end to end for organisations that need something made. Right now that's Almo, an interactive study app for medical students.",
       "surface": "white",
       "roles": null,
       "memberCount": 3,
-      "order": 3
+      "order": 2
     },
     {
       "title": "Marketing team",
       "groupId": "marketing",
-      "blurb": "Events, socials, and outreach that keep the labs full.",
+      "blurb": "Events, socials, and outreach that keep the labs full — running workshops and speaker nights, handling partner communications, and putting MaaSec in front of students who haven't found us yet.",
       "surface": "blue",
-      "roles": "Content & design\nEvents\nSocials\nPartnerships",
+      "roles": null,
       "memberCount": 1,
       "order": 4
     }

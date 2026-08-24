@@ -1,0 +1,150 @@
+{
+  "syncedAt": "2026-08-23T18:34:02.749Z",
+  "team": {
+    "id": 365940,
+    "name": "MaaSec",
+    "country": "NL",
+    "academic": true,
+    "university": "DACS @ Maastricht University",
+    "url": "https://ctftime.org/team/365940"
+  },
+  "seasons": [
+    {
+      "year": 2026,
+      "countryPlace": null,
+      "globalPlace": null,
+      "points": null,
+      "inProgress": true
+    },
+    {
+      "year": 2025,
+      "countryPlace": 3,
+      "globalPlace": 463,
+      "points": 132.476,
+      "inProgress": false
+    }
+  ],
+  "results": [
+    {
+      "event": "THEM?!CTF",
+      "year": 2026,
+      "place": 15,
+      "totalTeams": 585,
+      "topPercent": 2.6,
+      "points": 8056
+    },
+    {
+      "event": "PascalCTF",
+      "year": 2026,
+      "place": 153,
+      "totalTeams": 854,
+      "topPercent": 17.9,
+      "points": 4343
+    },
+    {
+      "event": "SwampCTF",
+      "year": 2025,
+      "place": 23,
+      "totalTeams": 750,
+      "topPercent": 3.1,
+      "points": 3577
+    },
+    {
+      "event": "Kashi CTF",
+      "year": 2025,
+      "place": 25,
+      "totalTeams": 728,
+      "topPercent": 3.4,
+      "points": 4939
+    },
+    {
+      "event": "FortID CTF",
+      "year": 2025,
+      "place": 33,
+      "totalTeams": 553,
+      "topPercent": 6,
+      "points": 2438
+    },
+    {
+      "event": "UMDCTF",
+      "year": 2025,
+      "place": 40,
+      "totalTeams": 708,
+      "topPercent": 5.6,
+      "points": 7098
+    },
+    {
+      "event": "Grey Cat The Flag",
+      "year": 2025,
+      "place": 63,
+      "totalTeams": 775,
+      "topPercent": 8.1,
+      "points": 4878
+    },
+    {
+      "event": "SunshineCTF",
+      "year": 2025,
+      "place": 89,
+      "totalTeams": 1376,
+      "topPercent": 6.5,
+      "points": 2342
+    },
+    {
+      "event": "TU Delft CTF",
+      "year": 2025,
+      "place": 90,
+      "totalTeams": 94,
+      "topPercent": 95.7,
+      "points": 1000
+    },
+    {
+      "event": "saarCTF",
+      "year": 2025,
+      "place": 96,
+      "totalTeams": 127,
+      "topPercent": 75.6,
+      "points": 11554
+    },
+    {
+      "event": "LA CTF",
+      "year": 2025,
+      "place": 97,
+      "totalTeams": 931,
+      "topPercent": 10.4,
+      "points": 5118
+    },
+    {
+      "event": "PlaidCTF",
+      "year": 2025,
+      "place": 111,
+      "totalTeams": 865,
+      "topPercent": 12.8,
+      "points": 143
+    },
+    {
+      "event": "Google CTF",
+      "year": 2025,
+      "place": 143,
+      "totalTeams": 276,
+      "topPercent": 51.8,
+      "points": 254
+    }
+  ],
+  "writeups": {
+    "repo": "MaaSecLab/CTF-Writeups",
+    "url": "https://github.com/MaaSecLab/CTF-Writeups",
+    "lastPushedAt": "2026-02-02T19:32:23Z",
+    "stars": 3,
+    "competitions": [
+      "FortID2025",
+      "GoogleCTF2025",
+      "GreyCatTheFlagCTF2025",
+      "KashiCTF2025",
+      "PascalCTF-2026",
+      "PlaidCTF2025",
+      "SunshineCTF2025",
+      "UMDCTF2025",
+      "swampCTF2025"
+    ]
+  }
+}

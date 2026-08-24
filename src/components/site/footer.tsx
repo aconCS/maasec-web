@@ -18,6 +18,7 @@ const columns = [
       { href: "/join?team=ctf", label: "CTF team" },
       { href: "/join?team=consultancy", label: "Consultancy" },
       { href: "/join?team=marketing", label: "Marketing" },
+      { href: "/join?team=swe", label: "Software Development" },
     ],
   },
   {

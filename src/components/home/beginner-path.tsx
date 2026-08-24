@@ -1,35 +1,47 @@
+import type { ReactNode } from "react";
 import { ButtonLink } from "@/components/ui/button";
 
-const steps = [
-  {
-    num: "01",
-    title: "Show up to a lab",
-    body: "No prep needed, bring a laptop.",
-  },
-  {
-    num: "02",
-    title: "Learn the tools",
-    body: "A mentor will guide you through the process.",
-  },
-  {
-    num: "03",
-    title: "Solve your first flag",
-    body: "It only gets better from here.",
-  },
-];
+export type BeginnerPathStep = { num: string; title: string; body: string };
 
-export function BeginnerPath() {
+/**
+ * A headline + CTA opposite a numbered path — reused wherever the pitch is
+ * "here's exactly how you start," not just "here's why to join." The
+ * numbers are load-bearing here (a real first/second/third), unlike the
+ * old 01-04 markers on the Offers accordion, which numbered four parallel
+ * options rather than a sequence.
+ */
+export function BeginnerPath({
+  headingId,
+  heading,
+  buttonHref,
+  buttonLabel,
+  steps,
+}: {
+  /** Applied to the heading and referenced by the section's
+   *  aria-labelledby, matching how every other section on a page like
+   *  /ctf names itself. Omit where the page doesn't label sections this
+   *  way (the homepage doesn't). */
+  headingId?: string;
+  heading: ReactNode;
+  buttonHref: string;
+  buttonLabel: string;
+  steps: BeginnerPathStep[];
+}) {
   return (
-    <section className="bg-blue-100 px-6 py-14 md:px-14">
+    <section
+      aria-labelledby={headingId}
+      className="bg-blue-100 px-6 py-14 md:px-14"
+    >
       <div className="mx-auto grid max-w-[1200px] items-center gap-16 md:grid-cols-2 md:gap-22">
         <div className="flex flex-col items-start gap-6">
-          <h3 className="max-w-[440px] font-display text-[clamp(30px,3vw,38px)] leading-[1.2] font-semibold tracking-[-0.02em] text-blue-900">
-            CTFs look impossible from the outside.
-            <br />
-            We&rsquo;re bringing you in.
+          <h3
+            id={headingId}
+            className="max-w-[440px] font-display text-[clamp(30px,3vw,38px)] leading-[1.2] font-semibold tracking-[-0.02em] text-blue-900"
+          >
+            {heading}
           </h3>
-          <ButtonLink href="/events" size="lg">
-            Start at your first lab
+          <ButtonLink href={buttonHref} size="lg">
+            {buttonLabel}
           </ButtonLink>
         </div>
 

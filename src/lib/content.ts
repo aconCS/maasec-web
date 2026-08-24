@@ -1,3 +1,5 @@
+import ctfData from "../../content/ctf.json";
+import ctftimeData from "../../content/ctftime.json";
 import eventsData from "../../content/events.json";
 import joinTeamsData from "../../content/join-teams.json";
 import speakersData from "../../content/speakers.json";
@@ -265,6 +267,100 @@ export async function getJoinTeams(): Promise<JoinTeam[]> {
         .filter(Boolean),
       open: t.open ?? true,
     }));
+}
+
+// --- CTF team -------------------------------------------------------------
+
+export type CtfSeason = {
+  year: number;
+  /** Null while a season is still being played. CTFtime's API reports a
+   *  `country_place` for the running year that does not match its own
+   *  published country scoreboard, so an unfinished season carries no
+   *  placement here and the site never states one. */
+  countryPlace: number | null;
+  globalPlace: number | null;
+  points: number | null;
+  inProgress: boolean;
+};
+
+export type CtfCategory = { name: string; short: string; gloss: string };
+
+/** One competition's published result. Unlike a season standing, an
+ *  individual event's placement is final the moment the event ends — so
+ *  these are shown regardless of which year they fall in. */
+export type CtfResult = {
+  event: string;
+  year: number;
+  place: number;
+  totalTeams: number;
+  topPercent: number;
+  points: number;
+};
+
+export type CtfRecord = {
+  profileUrl: string;
+  /** Most recent season first. */
+  seasons: CtfSeason[];
+  /** The most recent season with a published placement — the only figure
+   *  the site quotes. Never an in-progress season. */
+  confirmed: CtfSeason & { countryPlace: number };
+  /** Every synced competition result, most recent first. */
+  results: CtfResult[];
+  writeups: {
+    url: string;
+    /** How many competition folders the repo actually holds. */
+    count: number;
+    lastPushedAt: string;
+    /** Display names for competitions still present in the repo. Curated
+     *  in content/ctf.json but filtered against the synced folder list, so
+     *  the page can never name a competition that has been removed. */
+    named: string[];
+  };
+  syncedAt: string;
+};
+
+export async function getCtfRecord(): Promise<CtfRecord> {
+  const seasons = [...ctftimeData.seasons].sort(
+    (a, b) => b.year - a.year,
+  ) as CtfSeason[];
+
+  const present = new Set(ctftimeData.writeups.competitions);
+  const named = ctfData.marqueeCompetitions
+    .filter((c) => present.has(c.folder))
+    .map((c) => c.name);
+
+  const confirmed = seasons.find(
+    (s): s is CtfSeason & { countryPlace: number } => s.countryPlace !== null,
+  );
+  if (!confirmed) {
+    throw new Error("content/ctftime.json has no completed-season placement");
+  }
+
+  return {
+    profileUrl: ctftimeData.team.url,
+    seasons,
+    confirmed,
+    results: ctftimeData.results as CtfResult[],
+    writeups: {
+      url: ctftimeData.writeups.url,
+      count: ctftimeData.writeups.competitions.length,
+      lastPushedAt: ctftimeData.writeups.lastPushedAt,
+      named,
+    },
+    syncedAt: ctftimeData.syncedAt,
+  };
+}
+
+export async function getCtfCategories(): Promise<CtfCategory[]> {
+  return [...ctfData.categories]
+    .sort((a, b) => a.order - b.order)
+    .map(({ name, short, gloss }) => ({ name, short, gloss }));
+}
+
+/** Headcount for the CTF squad, read from the same place /team reads it. */
+export async function getCtfMemberCount(): Promise<number | undefined> {
+  const groups = await getTeamGroups();
+  return groups.find((g) => g.id === "ctf")?.memberCount;
 }
 
 type RawSpeaker = { title: string; order: number };

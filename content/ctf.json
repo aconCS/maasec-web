@@ -1,0 +1,51 @@
+{
+  "categories": [
+    {
+      "name": "Binary exploitation",
+      "short": "pwn",
+      "gloss": "Feeding a program input it was never built to survive, until it hands you control.",
+      "order": 0
+    },
+    {
+      "name": "Reverse engineering",
+      "short": "rev",
+      "gloss": "Taking a compiled binary apart with no source code, until you understand what it does and why.",
+      "order": 1
+    },
+    {
+      "name": "Web exploitation",
+      "short": "web",
+      "gloss": "Finding the one request a web app trusts that it shouldn't. The category most people start in.",
+      "order": 2
+    },
+    {
+      "name": "Cryptography",
+      "short": "crypto",
+      "gloss": "Breaking the maths, or more often, breaking the way someone used the maths.",
+      "order": 3
+    },
+    {
+      "name": "Forensics",
+      "short": "forensics",
+      "gloss": "Reconstructing what happened from a disk image, a packet capture, or a memory dump.",
+      "order": 4
+    },
+    {
+      "name": "OSINT",
+      "short": "osint",
+      "gloss": "Finding what is technically public and practically hidden. No tooling required to begin.",
+      "order": 5
+    }
+  ],
+  "marqueeCompetitions": [
+    { "folder": "GoogleCTF2025", "name": "Google CTF" },
+    { "folder": "PlaidCTF2025", "name": "PlaidCTF" },
+    { "folder": "swampCTF2025", "name": "SwampCTF" },
+    { "folder": "UMDCTF2025", "name": "UMDCTF" },
+    { "folder": "GreyCatTheFlagCTF2025", "name": "Grey Cat The Flag" },
+    { "folder": "PascalCTF-2026", "name": "PascalCTF" },
+    { "folder": "SunshineCTF2025", "name": "SunshineCTF" },
+    { "folder": "KashiCTF2025", "name": "KashiCTF" },
+    { "folder": "FortID2025", "name": "FortID" }
+  ]
+}

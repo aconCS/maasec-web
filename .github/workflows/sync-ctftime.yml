@@ -1,0 +1,47 @@
+# The site is a static export, so nothing queries CTFtime at request time.
+# This workflow is the only thing keeping the CTF page's standings honest —
+# if it stops running, the page silently goes stale.
+
+name: Sync CTFtime standings
+
+on:
+  schedule:
+    # Mondays, 06:00 UTC. CTFtime recalculates continuously; weekly is
+    # frequent enough for a placement that moves a few times a season.
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-ctftime
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Fetch CTFtime and repository data
+        run: node scripts/sync-ctftime.mjs
+        env:
+          # Lifts the GitHub API rate limit for the writeups-repo lookup.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit if the record changed
+        run: |
+          if [ -z "$(git status --porcelain content/ctftime.json)" ]; then
+            echo "No change to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/ctftime.json
+          git commit -m "Sync CTFtime standings"
+          git push

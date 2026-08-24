@@ -7,7 +7,8 @@ import { JoinCta } from "@/components/home/join-cta";
 import { Footer } from "@/components/site/footer";
 import { Nav } from "@/components/site/nav";
 import { ImageSlot } from "@/components/ui/image-slot";
-import { getJoinTeams } from "@/lib/content";
+import { getCtfRecord, getJoinTeams } from "@/lib/content";
+import { ordinal } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "About",
@@ -31,7 +32,7 @@ const members = [
 ];
 
 export default async function AboutPage() {
-  const teams = await getJoinTeams();
+  const [teams, ctf] = await Promise.all([getJoinTeams(), getCtfRecord()]);
 
   return (
     <>
@@ -82,7 +83,10 @@ export default async function AboutPage() {
 
         <WhatWeDo teams={teams} />
 
-        <Achievements />
+        <Achievements
+          nationalPlace={ordinal(ctf.confirmed.countryPlace)}
+          nationalNote={`Our CTF team's national ranking in ${ctf.confirmed.year}.`}
+        />
 
         {/* Gallery */}
         <section className="mx-auto flex max-w-[1160px] flex-col gap-10 px-6 py-24 md:px-14">
