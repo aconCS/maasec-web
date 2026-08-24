@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: site.name,
-    title: `${site.name} — Break things. And then learn to defend them.`,
+    title: `${site.name} — Break things. and learn to defend them.`,
     description: site.description,
     url: site.url,
   },

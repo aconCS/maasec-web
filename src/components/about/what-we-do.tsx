@@ -1,6 +1,6 @@
 "use client";
 
-import { Flag, Megaphone, ShieldCheck } from "lucide-react";
+import { Flag, CodeXml, Megaphone, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { ButtonLink } from "@/components/ui/button";
 import type { JoinTeam } from "@/lib/content";
@@ -9,6 +9,7 @@ const ICONS: Record<string, typeof Flag> = {
   ctf: Flag,
   marketing: Megaphone,
   consultancy: ShieldCheck,
+  swe: CodeXml
 };
 
 /**

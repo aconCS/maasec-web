@@ -19,7 +19,7 @@ export async function Hero() {
                 <span className="text-blue-400">.</span>
               </h1>
               <p className="w-full text-justify [text-align-last:justify] font-serif text-[clamp(18px,4vw,46px)] leading-[1.12] font-medium tracking-[-0.015em] text-gray-800 italic">
-                and then learn to defend them.
+                and learn to defend them.
               </p>
             </div>
 
