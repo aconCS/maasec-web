@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-08-23T18:34:02.749Z",
+  "syncedAt": "2026-08-24T06:39:09.481Z",
   "team": {
     "id": 365940,
     "name": "MaaSec",
@@ -122,7 +122,7 @@
       "points": 143
     },
     {
-      "event": "Google CTF",
+      "event": "Google Capture The Flag",
       "year": 2025,
       "place": 143,
       "totalTeams": 276,
