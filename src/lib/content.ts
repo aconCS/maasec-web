@@ -311,10 +311,12 @@ export type CtfRecord = {
     /** How many competition folders the repo actually holds. */
     count: number;
     lastPushedAt: string;
-    /** Display names for competitions still present in the repo. Curated
-     *  in content/ctf.json but filtered against the synced folder list, so
-     *  the page can never name a competition that has been removed. */
-    named: string[];
+    /** Competitions still present in the repo, curated in content/ctf.json
+     *  but filtered against the synced folder list, so the page can never
+     *  name — or link to — a competition that has been removed. `folder`
+     *  is the exact path segment under the repo's tree, for linking straight
+     *  into that competition's directory rather than just the repo root. */
+    named: { name: string; folder: string }[];
   };
   syncedAt: string;
 };
@@ -327,7 +329,7 @@ export async function getCtfRecord(): Promise<CtfRecord> {
   const present = new Set(ctftimeData.writeups.competitions);
   const named = ctfData.marqueeCompetitions
     .filter((c) => present.has(c.folder))
-    .map((c) => c.name);
+    .map((c) => ({ name: c.name, folder: c.folder }));
 
   const confirmed = seasons.find(
     (s): s is CtfSeason & { countryPlace: number } => s.countryPlace !== null,

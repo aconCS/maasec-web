@@ -14,7 +14,7 @@ export const site = {
     discord: "https://discord.gg/VpsVY8bDpu",
     whatsapp: "https://chat.whatsapp.com/BTT4rA347J301PrYCBe9A6",
     linkedin: "https://www.linkedin.com/company/maasec/",
-    instagram: "https://www.instagram.com/maasec/",
+    instagram: "https://www.instagram.com/maasec.acm/",
     github: "https://github.com/MaaSecLab",
   },
 } as const;

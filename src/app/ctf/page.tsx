@@ -1,12 +1,12 @@
-import { Folder} from "lucide-react";
+import { Folder } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
+import { HeightBoundScroll } from "@/components/ctf/height-bound-scroll";
 import { BeginnerPath } from "@/components/home/beginner-path";
 import { JoinCta } from "@/components/home/join-cta";
 import { Footer } from "@/components/site/footer";
 import { Nav } from "@/components/site/nav";
 import { ButtonLink } from "@/components/ui/button";
-import { ImageSlot } from "@/components/ui/image-slot";
 import {
   getCtfCategories,
   getCtfRecord,
@@ -41,7 +41,7 @@ export default async function CtfPage() {
 
   // "Google CTF, PlaidCTF, and 7 others" — the two best-known names carry
   // the credibility, the count carries the volume.
-  const marquee = writeups.named.slice(0, 2);
+  const marquee = writeups.named.slice(0, 2).map((c) => c.name);
   const remaining = writeups.count - marquee.length;
   const competitionLine =
     remaining > 0
@@ -114,9 +114,9 @@ export default async function CtfPage() {
             Standing and results
           </h2>
 
-          <div className="mx-auto grid max-w-[1160px] gap-12 md:grid-cols-2 md:items-end md:gap-16">
-            <div className="flex flex-col gap-4">
-              <div className="max-h-[420px] overflow-y-auto rounded-[10px] border border-blue-200">
+          <div className="mx-auto grid max-w-[1160px] gap-12 md:grid-cols-2 md:items-start md:gap-16">
+            <HeightBoundScroll
+              scrollable={
                 <table className="w-full border-collapse">
                   <thead>
                     <tr className="sticky top-0 bg-blue-50">
@@ -153,70 +153,71 @@ export default async function CtfPage() {
                     ))}
                   </tbody>
                 </table>
-              </div>
-            </div>
-
-            <div className="flex flex-col">
-              <dl className="flex flex-col">
-                <div className="grid items-baseline gap-x-10 gap-y-2 py-9 md:grid-cols-[minmax(0,220px)_1fr]">
-                  <dt data-reveal className="overflow-hidden">
-                    <span className="block font-display text-[clamp(64px,9vw,112px)] leading-[0.82] font-extrabold tracking-[-0.05em] text-blue-900 tabular-nums">
-                      {ordinal(confirmed.countryPlace)}
-                    </span>
-                  </dt>
-                  <dd
-                    data-reveal
-                    style={{ ["--reveal-delay" as string]: "100ms" }}
-                    className="flex flex-col gap-2 md:pb-2"
-                  >
-                    <span className="font-display text-lg leading-snug font-semibold text-blue-900">
-                      In the Netherlands 🇳🇱
-                    </span>
-                  </dd>
-                </div>
-
-                {confirmed.globalPlace && (
-                  <>
-                    <div className="h-px w-full bg-blue-200" aria-hidden />
+              }
+              reference={
+                <>
+                  <dl className="flex flex-col">
                     <div className="grid items-baseline gap-x-10 gap-y-2 py-9 md:grid-cols-[minmax(0,220px)_1fr]">
                       <dt data-reveal className="overflow-hidden">
-                        <span className="block font-display text-[clamp(36px,5vw,56px)] leading-[0.82] font-bold tracking-[-0.04em] text-blue-700 tabular-nums">
-                          {ordinal(confirmed.globalPlace)}
+                        <span className="block font-display text-[clamp(64px,9vw,112px)] leading-[0.82] font-extrabold tracking-[-0.05em] text-blue-900 tabular-nums">
+                          {ordinal(confirmed.countryPlace)}
                         </span>
                       </dt>
                       <dd
                         data-reveal
                         style={{ ["--reveal-delay" as string]: "100ms" }}
-                        className="flex flex-col gap-1.5 md:pb-2"
+                        className="flex flex-col gap-2 md:pb-2"
                       >
                         <span className="font-display text-lg leading-snug font-semibold text-blue-900">
-                          Worldwide 🌍
+                          In the Netherlands 🇳🇱
                         </span>
                       </dd>
                     </div>
-                  </>
-                )}
-                <div className="h-px w-full bg-blue-200" aria-hidden />
-              </dl>
 
-              {/* The figures are only trustworthy if the reader can check
+                    {confirmed.globalPlace && (
+                      <>
+                        <div className="h-px w-full bg-blue-200" aria-hidden />
+                        <div className="grid items-baseline gap-x-10 gap-y-2 py-9 md:grid-cols-[minmax(0,220px)_1fr]">
+                          <dt data-reveal className="overflow-hidden">
+                            <span className="block font-display text-[clamp(36px,5vw,56px)] leading-[0.82] font-bold tracking-[-0.04em] text-blue-700 tabular-nums">
+                              {ordinal(confirmed.globalPlace)}
+                            </span>
+                          </dt>
+                          <dd
+                            data-reveal
+                            style={{ ["--reveal-delay" as string]: "100ms" }}
+                            className="flex flex-col gap-1.5 md:pb-2"
+                          >
+                            <span className="font-display text-lg leading-snug font-semibold text-blue-900">
+                              Worldwide 🌍
+                            </span>
+                          </dd>
+                        </div>
+                      </>
+                    )}
+                    <div className="h-px w-full bg-blue-200" aria-hidden />
+                  </dl>
+
+                  {/* The figures are only trustworthy if the reader can check
                   them and see how fresh they are. Both, on one line. */}
-              <p className="pt-5 font-mono text-[11px] leading-relaxed tracking-[0.14em] text-gray-600 uppercase">
-                <a
-                  href={profileUrl}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="text-blue-700 underline underline-offset-4 hover:text-blue-900"
-                >
-                  Verify on CTFtime
-                </a>
-                <span aria-hidden> · </span>
-                Synced{" "}
-                <time dateTime={record.syncedAt}>
-                  {monthYear(record.syncedAt)}
-                </time>
-              </p>
-            </div>
+                  <p className="pt-5 font-mono text-[11px] leading-relaxed tracking-[0.14em] text-gray-600 uppercase">
+                    <a
+                      href={profileUrl}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className="text-blue-700 underline underline-offset-4 hover:text-blue-900"
+                    >
+                      Verify on CTFtime
+                    </a>
+                    <span aria-hidden> · </span>
+                    Synced{" "}
+                    <time dateTime={record.syncedAt}>
+                      {monthYear(record.syncedAt)}
+                    </time>
+                  </p>
+                </>
+              }
+            />
           </div>
         </section>
 
@@ -239,8 +240,9 @@ export default async function CtfPage() {
                 </h2>
 
                 <p className="max-w-[440px] font-body text-base leading-relaxed text-gray-700">
-                  Our solutions are published openly — from the challenges we face
-                  during competitions to the techniques we use to solve them.
+                  Our solutions are published openly — from the challenges we
+                  face during competitions to the techniques we use to solve
+                  them.
                 </p>
               </div>
 
@@ -274,19 +276,29 @@ export default async function CtfPage() {
             {/* Right */}
             <div className="border-t border-blue-200 pt-5">
               <ul className="grid grid-cols-1 gap-0 sm:grid-cols-2">
-                {writeups.named.map((name, i) => (
+                {writeups.named.map((competition, i) => (
                   <li
-                    key={name}
+                    key={competition.name}
                     data-reveal
                     style={{ ["--reveal-delay" as string]: `${i * 30}ms` }}
-                    className="flex items-center gap-3 border-b border-blue-200 py-4 font-mono text-[13.5px] text-blue-900"
+                    className="border-b border-blue-200"
                   >
-                    <Folder
-                      aria-hidden
-                      className="h-4 w-4 flex-none text-blue-400"
-                      strokeWidth={1.75}
-                    />
-                    {name}
+                    <a
+                      href={`${writeups.url}/tree/main/${competition.folder}`}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      aria-label={`View ${competition.name} solutions on GitHub`}
+                      className="group flex items-center gap-3 py-4 font-mono text-[13.5px] text-blue-900 transition-colors duration-150 hover:text-blue-600"
+                    >
+                      <Folder
+                        aria-hidden
+                        className="h-4 w-4 flex-none text-blue-400 transition-colors duration-150 group-hover:text-blue-600"
+                        strokeWidth={1.75}
+                      />
+                      <span className="underline decoration-blue-200 underline-offset-4 group-hover:decoration-blue-600">
+                        {competition.name}
+                      </span>
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -295,11 +307,10 @@ export default async function CtfPage() {
         </section>
 
         {/* --- Specialisms (glossary) ---------------------------------------
-            Six self-contained reference cards, not a list to read top to
-            bottom — the shape says "look these up as you need them." Each
-            card carries its own short code as a catalogue-style corner tab
-            instead of an inline bracket, and there's no ranking or path
-            implied by the grid order. */}
+            Dictionary entries, not product cards. Someone meets "pwn" in a
+            writeup and comes looking for that word — so the shorthand is
+            the headword and the formal name drops to a classifier line
+            under it. A real <dl>, since that is what this is. */}
         <section
           aria-labelledby="glossary-heading"
           className="px-6 py-22 md:px-14"
@@ -313,28 +324,31 @@ export default async function CtfPage() {
                 Building blocks of CTF
               </h2>
               <p className="font-body text-base leading-relaxed text-gray-700">
-                Each category demands a different set of skills, techniques, and ways of thinking.
+                Each category demands a different set of skills, techniques, and
+                ways of thinking.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <dl className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
               {categories.map((c) => (
                 <div
                   key={c.short}
-                  className="relative rounded-[4px] border border-blue-200 bg-white p-6 pt-7 shadow-[2px_2px_0_var(--color-blue-100)]"
+                  className="rounded-card bg-blue-50 px-6 pt-6 pb-7"
                 >
-                  <span className="absolute top-0 right-4 rounded-b-[4px] bg-blue-900 px-2.5 py-1 font-mono text-[10.5px] tracking-[0.08em] text-white">
-                    {c.short}
-                  </span>
-                  <h3 className="mb-2.5 border-b border-dashed border-blue-200 pb-2.5 font-display text-[19px] leading-snug font-semibold tracking-[-0.015em] text-blue-900">
-                    {c.name}
-                  </h3>
-                  <p className="font-body text-[14px] leading-relaxed text-gray-700">
+                  <dt>
+                    <span className="block font-display text-[31px] leading-none font-extrabold tracking-[-0.035em] text-blue-900">
+                      {c.short}
+                    </span>
+                    <span className="mt-2.5 block font-mono text-[11px] tracking-[0.1em] text-gray-600 uppercase">
+                      {c.name}
+                    </span>
+                  </dt>
+                  <dd className="mt-4 border-t border-blue-200 pt-4 font-body text-[14px] leading-relaxed text-gray-700">
                     {c.gloss}
-                  </p>
+                  </dd>
                 </div>
               ))}
-            </div>
+            </dl>
           </div>
         </section>
 
@@ -418,55 +432,10 @@ export default async function CtfPage() {
               </ul>
             ) : (
               <p className="max-w-[560px] font-body text-base leading-relaxed text-gray-700">
-                Nothing locked in yet for this semester — training itself runs every
-                week regardless.
+                Nothing locked in yet for this semester — training itself runs
+                every week regardless.
               </p>
             )}
-          </div>
-        </section>
-
-
-        {/* --- Pictures -------------------------------------------------- */}
-        <section
-          aria-labelledby="pictures-heading"
-          className="bg-blue-100 px-6 py-22 md:px-14"
-        >
-          <div className="mx-auto flex max-w-[1160px] flex-col gap-10">
-            <h2 id="pictures-heading" className="sr-only">
-              Pictures
-            </h2>
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:grid-rows-2">
-              <ImageSlot
-                src="/images/graphics/hero-ctf-team.png"
-                alt="The MaaSec CTF team"
-                radius={10}
-                className="col-span-2 row-span-2 aspect-square md:aspect-auto"
-              />
-              <ImageSlot
-                src="/images/gallery/ctf.jpg"
-                alt="MaaSec members working through a CTF challenge together"
-                radius={10}
-                className="aspect-square"
-              />
-              <ImageSlot
-                src="/images/gallery/team1.jpg"
-                alt="MaaSec team at a competition"
-                radius={10}
-                className="aspect-square"
-              />
-              <ImageSlot
-                src="/images/gallery/team2.jpg"
-                alt="The MaaSec club"
-                radius={10}
-                className="aspect-square"
-              />
-              <ImageSlot
-                src="/images/graphics/gallery-1.png"
-                alt="THEM?!CTF 2026 results"
-                radius={10}
-                className="aspect-square"
-              />
-            </div>
           </div>
         </section>
       </main>
