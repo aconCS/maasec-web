@@ -1,5 +1,65 @@
 [
   {
+    "slug": "tfc-ctf-2026",
+    "title": "TFC CTF 2026",
+    "content": "<p>Jeopardy-style CTF covering miscellaneous challenges, cryptography, web security, reverse engineering, artificial intelligence, and binary exploitation.</p>",
+    "eventDate": "2026-09-05",
+    "eventTime": "TBA",
+    "location": "Online",
+    "category": "CTF",
+    "status": null,
+    "result": "MaaSec CTF team competition covering a broad range of cybersecurity topics.",
+    "signupUrl": null
+  },
+  {
+    "slug": "defcamp-ctf-2026-quals",
+    "title": "DefCamp Capture the Flag (D-CTF) 2026 Quals",
+    "content": "<p>Jeopardy-style CTF covering miscellaneous challenges, cryptography, web security, reverse engineering, artificial intelligence, and binary exploitation. Competition is expected to be highly competitive.</p>",
+    "eventDate": "2026-09-18",
+    "eventTime": "TBA",
+    "location": "Online",
+    "category": "CTF",
+    "status": null,
+    "result": "A highly competitive CTF and a strong opportunity for the MaaSec team to test itself against experienced teams.",
+    "signupUrl": null
+  },
+  {
+    "slug": "halon-bug-bounty-2026",
+    "title": "HALON Bug Bounty 2026",
+    "content": "<p>An in-person bug bounty event focused on finding undiscovered vulnerabilities across institutions in the Netherlands. MaaSec is returning following its participation in HALON 2025.</p>",
+    "eventDate": "2026-10-08",
+    "eventTime": "All day",
+    "location": "TBA",
+    "category": "Bug Bounty",
+    "status": null,
+    "result": "MaaSec returns to HALON for another opportunity to identify vulnerabilities across Dutch institutions.",
+    "signupUrl": null
+  },
+  {
+    "slug": "deadface-ctf-2026",
+    "title": "Deadface CTF 2026",
+    "content": "<p>Jeopardy-style CTF covering miscellaneous challenges, cryptography, web security, reverse engineering, artificial intelligence, and binary exploitation.</p>",
+    "eventDate": "2026-10-17",
+    "eventTime": "TBA",
+    "location": "Online",
+    "category": "CTF",
+    "status": null,
+    "result": "MaaSec CTF team competition covering a broad range of cybersecurity topics.",
+    "signupUrl": null
+  },
+  {
+    "slug": "picoctf-2027",
+    "title": "picoCTF 2027",
+    "content": "<p>Jeopardy-style CTF covering miscellaneous challenges, cryptography, web security, reverse engineering, artificial intelligence, and binary exploitation. The competition is expected in March 2027.</p>",
+    "eventDate": "2027-03-01",
+    "eventTime": "TBA",
+    "location": "Online",
+    "category": "CTF",
+    "status": null,
+    "result": "Expected March 2027. A broad, accessible CTF covering core cybersecurity categories.",
+    "signupUrl": null
+  },
+  {
     "slug": "guest-talk-farzan-karimi-moderna",
     "title": "Guest Talk: Farzan Karimi (Moderna)",
     "content": "<p>A digital talk on hacking stories from tech giants — including the FIFA coin<br />\nhack — plus student Q&A on standing out for big tech and using AI in<br />\ncybersecurity. Free pizza and iced drinks.</p>\n",
