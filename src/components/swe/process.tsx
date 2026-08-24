@@ -13,7 +13,7 @@ const stages = [
   {
     num: "01",
     title: "Discover",
-    body: "A short call to understand what you want to build, who it’s for, and what success looks like.",
+    body: "A short brief to understand what you want to build, who it’s for, and what success looks like.",
   },
   {
     num: "02",
@@ -23,12 +23,12 @@ const stages = [
   {
     num: "03",
     title: "Build",
-    body: "A small, dedicated team builds in short iterations. Working software every week.",
+    body: "A small, dedicated team builds in short iterations. You receive working software every week.",
   },
   {
     num: "04",
     title: "Ship",
-    body: "Deployed, documented, and handed over. We stay involved well beyond launch.",
+    body: "Deployed, documented, and maintained. We stay involved well beyond launch.",
   },
 ];
 
