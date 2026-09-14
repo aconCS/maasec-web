@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-08-24T06:39:09.481Z",
+  "syncedAt": "2026-09-14T11:19:25.958Z",
   "team": {
     "id": 365940,
     "name": "MaaSec",
@@ -32,6 +32,14 @@
       "totalTeams": 585,
       "topPercent": 2.6,
       "points": 8056
+    },
+    {
+      "event": "TFC CTF",
+      "year": 2026,
+      "place": 78,
+      "totalTeams": 504,
+      "topPercent": 15.5,
+      "points": 3447
     },
     {
       "event": "PascalCTF",
@@ -133,7 +141,7 @@
   "writeups": {
     "repo": "MaaSecLab/CTF-Writeups",
     "url": "https://github.com/MaaSecLab/CTF-Writeups",
-    "lastPushedAt": "2026-02-02T19:32:23Z",
+    "lastPushedAt": "2026-09-08T17:49:18Z",
     "stars": 3,
     "competitions": [
       "FortID2025",
@@ -143,6 +151,7 @@
       "PascalCTF-2026",
       "PlaidCTF2025",
       "SunshineCTF2025",
+      "TFCCTF2026",
       "UMDCTF2025",
       "swampCTF2025"
     ]
