@@ -1,0 +1,84 @@
+{
+  "_readme": "Hand-edited. Each program is a tab on /hiring. `id` must match HIRING_PROGRAMS in src/lib/site.ts and worker/src/index.ts. Set a program's or a role's `open` to false to stop taking applications for it without removing it. Role ids are sent with the application, so keep them stable once live.",
+  "programs": [
+    {
+      "id": "nightjar",
+      "title": "Nightjar",
+      "repo": "nightjar",
+      "tagline": "Help build a fine-tuned model that exploits web applications well enough to win CTFs.",
+      "about": "Nightjar is a fine-tuned model with its own agent harness, specialised in web exploitation. We benchmark it against real CTF challenges, including our own, and the goal is simple: help MaaSec climb the rankings.",
+      "lookingFor": [
+        "Comfortable reading and writing Python",
+        "Curious about LLMs, agents, or web security — ideally two of the three",
+        "Around 5–10 hours a week, consistently"
+      ],
+      "open": true,
+      "order": 0,
+      "roles": [
+        {
+          "id": "ml",
+          "title": "ML engineer",
+          "summary": "Fine-tuning, training data pipelines, and evaluation runs.",
+          "open": true
+        },
+        {
+          "id": "harness",
+          "title": "Agent / harness engineer",
+          "summary": "The tool-calling loop, sandboxing, and how the model drives a browser and HTTP client.",
+          "open": true
+        },
+        {
+          "id": "webex",
+          "title": "Web exploitation specialist",
+          "summary": "Writing challenges and solve traces, and judging whether the model's exploits are actually right.",
+          "open": true
+        },
+        {
+          "id": "infra",
+          "title": "Infrastructure",
+          "summary": "GPU access, challenge environments, and keeping benchmark runs reproducible.",
+          "open": true
+        }
+      ]
+    },
+    {
+      "id": "collab",
+      "title": "MaaSec collaboration",
+      "tagline": "Contribute to our open projects, or bring one of your own.",
+      "about": "Beyond Nightjar, members and outside collaborators work on our tooling, learning material, and research. If you want to build something with us — or have a project that needs a security team — this is the place to start.",
+      "lookingFor": [
+        "Something you've built, broken, or written that you can show us",
+        "Willingness to work in the open on GitHub",
+        "Students and non-students both welcome"
+      ],
+      "open": true,
+      "order": 1,
+      "roles": [
+        {
+          "id": "contributor",
+          "title": "Project contributor",
+          "summary": "Code for Big Sister 2, MaaSec Tools, or another repository on our GitHub.",
+          "open": true
+        },
+        {
+          "id": "content",
+          "title": "Writeups & workshops",
+          "summary": "Guides, writeups, and workshop material for the Library and Workshops repos.",
+          "open": true
+        },
+        {
+          "id": "research",
+          "title": "Research partner",
+          "summary": "A joint security research project with the team.",
+          "open": true
+        },
+        {
+          "id": "other",
+          "title": "Something else",
+          "summary": "Tell us what you have in mind.",
+          "open": true
+        }
+      ]
+    }
+  ]
+}

@@ -36,6 +36,12 @@ type Env = {
 const TEAM_IDS = ["ctf", "consultancy", "marketing", "swe"] as const;
 type TeamId = (typeof TEAM_IDS)[number];
 
+/** Keep in sync with hiringProgramIds in src/lib/site.ts. */
+const HIRING_PROGRAMS = ["nightjar", "collab"] as const;
+type HiringProgramId = (typeof HIRING_PROGRAMS)[number];
+
+const AFFILIATIONS = ["um-student", "other-student", "industry", "other"] as const;
+
 const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW_SECONDS = 60;
 
@@ -88,6 +94,19 @@ type Commission = {
   contactName: string;
   email: string;
   message: string;
+};
+
+type HiringApplication = {
+  program: HiringProgramId;
+  role: string;
+  name: string;
+  surname: string;
+  email: string;
+  affiliation: string;
+  studentNumber: string;
+  links: string;
+  hours: string;
+  motivation: string;
 };
 
 /**
@@ -153,6 +172,64 @@ function parseCommission(input: unknown): Commission | string {
   if (message.length < 1) return "Tell us what you're looking to build.";
 
   return { organisation, contactName, email, message };
+}
+
+function parseHiring(input: unknown): HiringApplication | string {
+  if (typeof input !== "object" || input === null) return "Invalid request.";
+  const data = input as Record<string, unknown>;
+
+  const str = (v: unknown) => (typeof v === "string" ? v.trim() : "");
+
+  const program = str(data.program);
+  if (!(HIRING_PROGRAMS as readonly string[]).includes(program)) {
+    return "Pick a program.";
+  }
+
+  // Role ids live in content/hiring.json and change without a Worker
+  // deploy, so only their shape is checked here.
+  const role = str(data.role);
+  if (!/^[a-z0-9-]{1,40}$/.test(role)) return "Pick a role.";
+
+  const name = str(data.name);
+  if (name.length < 1 || name.length > 120) return "Enter your first name.";
+
+  const surname = str(data.surname);
+  if (surname.length < 1 || surname.length > 120) return "Enter your surname.";
+
+  const email = str(data.email);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+    return "Enter a valid email address.";
+  }
+
+  const affiliation = str(data.affiliation);
+  if (!(AFFILIATIONS as readonly string[]).includes(affiliation)) {
+    return "Tell us whether you're a student or working.";
+  }
+
+  const studentNumber = str(data.studentNumber).slice(0, 32);
+  if (affiliation === "um-student" && studentNumber.length < 1) {
+    return "Enter your student number.";
+  }
+
+  const links = str(data.links).slice(0, 500);
+  const hours = str(data.hours).slice(0, 20);
+  if (hours.length < 1) return "Tell us how many hours a week you have.";
+
+  const motivation = str(data.motivation).slice(0, 3000);
+  if (motivation.length < 1) return "Tell us what you'd work on.";
+
+  return {
+    program: program as HiringProgramId,
+    role,
+    name,
+    surname,
+    email,
+    affiliation,
+    studentNumber,
+    links,
+    hours,
+    motivation,
+  };
 }
 
 /** Fixed-window per-IP limit. No-op unless a KV namespace is bound. */
@@ -240,6 +317,47 @@ async function sendCommissionMail(commission: Commission, env: Env): Promise<boo
   return true;
 }
 
+async function sendHiringMail(app: HiringApplication, env: Env): Promise<boolean> {
+  if (!env.RESEND_API_KEY) {
+    console.info("[hiring] RESEND_API_KEY unset — would have sent:", app);
+    return true;
+  }
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: env.MAIL_FROM,
+      to: env.MAIL_TO,
+      // Prefixed so the board can filter each program into its own label.
+      subject: `[Hiring: ${app.program}] ${app.role} — ${app.name} ${app.surname}`,
+      reply_to: app.email,
+      text: [
+        `Program:         ${app.program}`,
+        `Role:            ${app.role}`,
+        `Name:            ${app.name} ${app.surname}`,
+        `Email:           ${app.email}`,
+        `Affiliation:     ${app.affiliation}`,
+        `Student number:  ${app.studentNumber || "(n/a)"}`,
+        `Hours per week:  ${app.hours}`,
+        `Links:           ${app.links || "(none)"}`,
+        "",
+        "Motivation:",
+        app.motivation,
+      ].join("\n"),
+    }),
+  });
+
+  if (!response.ok) {
+    console.error("[hiring] Resend error", response.status, await response.text());
+    return false;
+  }
+  return true;
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const cors = corsHeaders(request, env);
@@ -277,8 +395,9 @@ export default {
       return json({ ok: true }, 200, cors);
     }
 
-    // One endpoint, two shapes: the join form (default) and the software
-    // team's commission form ("kind": "commission"). Keeping them on the
+    // One endpoint, several shapes: the join form (default), the software
+    // team's commission form ("kind": "commission"), and project hiring on
+    // /hiring ("kind": "hiring"). Keeping them on the
     // same Worker avoids a second URL, secret, and deploy for one more
     // form with an identical trust boundary.
     const kind = (body as Record<string, unknown> | null)?.kind;
@@ -288,6 +407,22 @@ export default {
         return json({ error: parsed }, 400, cors);
       }
       const sent = await sendCommissionMail(parsed, env);
+      if (!sent) {
+        return json(
+          { error: "We couldn't send that right now. Try again shortly." },
+          502,
+          cors,
+        );
+      }
+      return json({ ok: true }, 200, cors);
+    }
+
+    if (kind === "hiring") {
+      const parsed = parseHiring(body);
+      if (typeof parsed === "string") {
+        return json({ error: parsed }, 400, cors);
+      }
+      const sent = await sendHiringMail(parsed, env);
       if (!sent) {
         return json(
           { error: "We couldn't send that right now. Try again shortly." },

@@ -1,10 +1,14 @@
 import ctfData from "../../content/ctf.json";
 import ctftimeData from "../../content/ctftime.json";
 import eventsData from "../../content/events.json";
+import hiringData from "../../content/hiring.json";
 import joinTeamsData from "../../content/join-teams.json";
+import projectOverridesData from "../../content/project-overrides.json";
+import projectsData from "../../content/projects.json";
 import speakersData from "../../content/speakers.json";
 import teamData from "../../content/team.json";
 import writeupsData from "../../content/writeups.json";
+import { hiringProgramIds, type HiringProgramId } from "./site";
 
 /**
  * All content lives in the `content/` directory as JSON, imported directly
@@ -372,4 +376,217 @@ export async function getSpeakers(): Promise<string[]> {
   return [...(speakersData as RawSpeaker[])]
     .sort((a, b) => a.order - b.order)
     .map((s) => s.title);
+}
+
+// --- Projects -------------------------------------------------------------
+
+export type ProjectCategoryId =
+  | "flagship"
+  | "tooling"
+  | "learning"
+  | "other"
+  | "archive";
+
+export type ProjectCategory = {
+  id: ProjectCategoryId;
+  title: string;
+  blurb: string;
+};
+
+export type Project = {
+  /** GitHub repo name, or the extra's id for projects with no public repo. */
+  id: string;
+  title: string;
+  summary: string;
+  category: ProjectCategoryId;
+  featured: boolean;
+  status?: string;
+  /** Public repository, when there is one. */
+  repoUrl?: string;
+  /** Where the title links: an internal page for extras, else the repo. */
+  href: string;
+  homepage?: string;
+  language?: string;
+  topics: string[];
+  stars: number;
+  license?: string;
+  fork: boolean;
+  pushedAt?: string;
+  /** Set when this project is recruiting through /hiring. */
+  hiringProgram?: HiringProgramId;
+};
+
+type RawRepo = (typeof projectsData.repos)[number];
+
+type RepoOverride = {
+  title?: string;
+  summary?: string;
+  category?: string;
+  featured?: boolean;
+  status?: string;
+  hiringProgram?: string;
+  hidden?: boolean;
+  order?: number;
+};
+
+type RawExtra = {
+  id: string;
+  title: string;
+  summary: string;
+  category: string;
+  featured?: boolean;
+  status?: string;
+  href: string;
+  order?: number;
+};
+
+const CATEGORY_IDS: ProjectCategoryId[] = [
+  "flagship",
+  "tooling",
+  "learning",
+  "other",
+  "archive",
+];
+
+function toCategory(value: string | undefined, fallback: ProjectCategoryId) {
+  return (CATEGORY_IDS as string[]).includes(value ?? "")
+    ? (value as ProjectCategoryId)
+    : fallback;
+}
+
+function toHiringProgram(value: string | undefined) {
+  return (hiringProgramIds as readonly string[]).includes(value ?? "")
+    ? (value as HiringProgramId)
+    : undefined;
+}
+
+/** Turns a repo slug into something readable when nobody has named it yet. */
+function titleFromRepo(name: string): string {
+  return name.replace(/[-_]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/**
+ * content/projects.json is machine-synced from GitHub; project-overrides.json
+ * adds the editorial layer. A repo with no override still appears, under
+ * "other", so a new repo is never silently missing from the page.
+ */
+export async function getProjects(): Promise<{
+  categories: ProjectCategory[];
+  projects: Project[];
+  orgUrl: string;
+  syncedAt: string;
+}> {
+  const overrides = projectOverridesData.repos as Record<string, RepoOverride>;
+  const orderOf = new Map<string, number>();
+
+  const fromRepos = (projectsData.repos as RawRepo[])
+    .filter((repo) => !overrides[repo.name]?.hidden)
+    .map((repo): Project => {
+      const o = overrides[repo.name] ?? {};
+      // Uncurated repos sort after curated ones, newest push first (the
+      // synced file is already in that order).
+      orderOf.set(repo.name, o.order ?? 1000);
+      return {
+        id: repo.name,
+        title: o.title ?? titleFromRepo(repo.name),
+        summary:
+          o.summary ||
+          repo.description ||
+          "No description yet — see the repository for details.",
+        category: toCategory(o.category, "other"),
+        featured: o.featured === true,
+        status: o.status,
+        repoUrl: repo.url,
+        href: repo.url,
+        homepage: repo.homepage ?? undefined,
+        language: repo.language ?? undefined,
+        topics: repo.topics,
+        stars: repo.stars,
+        license: repo.license ?? undefined,
+        fork: repo.fork,
+        pushedAt: repo.pushedAt,
+        hiringProgram: toHiringProgram(o.hiringProgram),
+      };
+    });
+
+  const fromExtras = (projectOverridesData.extras as RawExtra[]).map(
+    (e): Project => {
+      orderOf.set(e.id, e.order ?? 1000);
+      return {
+        id: e.id,
+        title: e.title,
+        summary: e.summary,
+        category: toCategory(e.category, "other"),
+        featured: e.featured === true,
+        status: e.status,
+        href: e.href,
+        topics: [],
+        stars: 0,
+        fork: false,
+      };
+    },
+  );
+
+  const projects = [...fromRepos, ...fromExtras].sort(
+    (a, b) => (orderOf.get(a.id) ?? 1000) - (orderOf.get(b.id) ?? 1000),
+  );
+
+  return {
+    categories: projectOverridesData.categories as ProjectCategory[],
+    projects,
+    orgUrl: projectsData.orgUrl,
+    syncedAt: projectsData.syncedAt,
+  };
+}
+
+// --- Hiring ---------------------------------------------------------------
+
+export type HiringRole = {
+  id: string;
+  title: string;
+  summary: string;
+  open: boolean;
+};
+
+export type HiringProgram = {
+  id: HiringProgramId;
+  title: string;
+  tagline: string;
+  about: string;
+  lookingFor: string[];
+  open: boolean;
+  roles: HiringRole[];
+  /** Public repo URL, resolved from the synced project list. */
+  repoUrl?: string;
+};
+
+type RawProgram = {
+  id: string;
+  title: string;
+  repo?: string;
+  tagline: string;
+  about: string;
+  lookingFor: string[];
+  open?: boolean;
+  order: number;
+  roles: { id: string; title: string; summary: string; open?: boolean }[];
+};
+
+export async function getHiringPrograms(): Promise<HiringProgram[]> {
+  const repos = new Map(
+    (projectsData.repos as RawRepo[]).map((r) => [r.name, r.url]),
+  );
+  return [...(hiringData.programs as RawProgram[])]
+    .filter((p) => toHiringProgram(p.id))
+    .sort((a, b) => a.order - b.order)
+    .map((p) => ({
+      id: p.id as HiringProgramId,
+      title: p.title,
+      tagline: p.tagline,
+      about: p.about,
+      lookingFor: p.lookingFor,
+      open: p.open ?? true,
+      roles: p.roles.map((r) => ({ ...r, open: r.open ?? true })),
+      repoUrl: p.repo ? repos.get(p.repo) : undefined,
+    }));
 }

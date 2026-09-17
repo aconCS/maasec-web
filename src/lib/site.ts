@@ -24,6 +24,7 @@ export const navLinks = [
   { href: "/team", label: "Team" },
   { href: "/ctf", label: "CTF" },
   { href: "/software", label: "Software" },
+  { href: "/projects", label: "Projects" },
   { href: "/events", label: "Events" },
   { href: "/learn", label: "Learn" },
 ] as const;
@@ -31,3 +32,8 @@ export const navLinks = [
 /** The teams a member can apply to. Keep ids in sync with content/teams. */
 export const teamIds = ["ctf", "consultancy", "marketing", "swe"] as const;
 export type TeamId = (typeof teamIds)[number];
+
+/** Programs a candidate can apply to on /hiring. Keep in sync with
+ * content/hiring.json and HIRING_PROGRAMS in worker/src/index.ts. */
+export const hiringProgramIds = ["nightjar", "collab"] as const;
+export type HiringProgramId = (typeof hiringProgramIds)[number];
