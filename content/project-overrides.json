@@ -1,0 +1,98 @@
+{
+  "_readme": "Hand-edited. content/projects.json is regenerated from GitHub; this file adds the words. Keys under `repos` are exact GitHub repo names. Any repo not listed here still appears on /projects under 'other' using its GitHub description. Set hidden: true to keep a repo off the page. Categories: flagship, tooling, learning, archive, other. `extras` are projects with no public repo.",
+  "categories": [
+    {
+      "id": "flagship",
+      "title": "Flagship",
+      "blurb": "Our biggest active builds."
+    },
+    {
+      "id": "tooling",
+      "title": "Tooling",
+      "blurb": "Things we built to solve challenges faster."
+    },
+    {
+      "id": "learning",
+      "title": "Learning & writeups",
+      "blurb": "What we've learned, published openly."
+    },
+    {
+      "id": "other",
+      "title": "Other",
+      "blurb": "Newer or not-yet-curated repositories."
+    }
+  ],
+  "repos": {
+    "nightjar": {
+      "title": "Nightjar",
+      "category": "flagship",
+      "featured": true,
+      "status": "Active · hiring",
+      "summary": "A fine-tuned model with its own agent harness, specialised in web exploitation. Built to help MaaSec win CTFs and climb the rankings.",
+      "hiringProgram": "nightjar",
+      "order": 0
+    },
+    "BigSister": {
+      "title": "Big Sister",
+      "category": "flagship",
+      "featured": true,
+      "status": "Active",
+      "summary": "OSINT challenge automation: metadata scraping, steganography checks and automated reverse image search, behind one GUI and CLI.",
+      "order": 1
+    },
+    "Tools": {
+      "title": "MaaSec Tools",
+      "category": "tooling",
+      "summary": "One script that sets up a Debian-based machine with everything a member needs for CTFs and security work.",
+      "order": 0
+    },
+    "CTF-Writeups": {
+      "title": "CTF Writeups",
+      "category": "learning",
+      "summary": "Our solutions from every competition we play — how we approached each challenge and what worked.",
+      "order": 0
+    },
+    "Library": {
+      "title": "Library",
+      "category": "learning",
+      "summary": "Essays, guides and articles by MaaSec members, from reverse-engineering primers to VM setup.",
+      "order": 1
+    },
+    "Workshops": {
+      "title": "Workshops",
+      "category": "learning",
+      "summary": "Slides, reference links and tooling from our workshops, starting with malware analysis.",
+      "order": 2
+    },
+    "BigSister_2": {
+      "title": "Big Sister 2",
+      "category": "tooling",
+      "summary": "The next iteration of Big Sister, in early development.",
+      "order": 1
+    },
+    "Platform": {
+      "hidden": true
+    },
+    "maasec.com": {
+      "hidden": true
+    },
+    "SwampCTF-2019-Challenges": {
+      "hidden": true
+    },
+    ".github": {
+      "hidden": true
+    }
+  },
+  "extras": [
+    {
+      "id": "almo",
+      "title": "Almo",
+      "category": "flagship",
+      "featured": true,
+      "status": "In development",
+      "summary": "An interactive study app for medical students, built by our software team and shipped iteratively around real students' feedback.",
+      "href": "/software",
+      "order": 2
+    }
+  ]
+}

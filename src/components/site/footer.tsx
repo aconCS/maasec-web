@@ -8,6 +8,7 @@ const columns = [
     links: [
       { href: "/about", label: "About us" },
       { href: "/team", label: "Our team" },
+      { href: "/projects", label: "Projects" },
       { href: "/events", label: "Events" },
       { href: "/learn", label: "Learn" },
     ],
@@ -19,6 +20,7 @@ const columns = [
       { href: "/join?team=consultancy", label: "Consultancy" },
       { href: "/join?team=marketing", label: "Marketing" },
       { href: "/join?team=swe", label: "Software Development" },
+      { href: "/hiring", label: "Project hiring" },
     ],
   },
   {
