@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import type { HiringProgram } from "@/lib/content";
 import { site } from "@/lib/site";
@@ -13,6 +13,27 @@ export function HiringApply({ programs }: { programs: HiringProgram[] }) {
   );
 
   const active = programs.find((p) => p.id === activeId) ?? programs[0];
+
+  // Load Tally's embed script so the iframe resizes correctly on all devices
+  // (a fixed-height raw iframe renders blank/collapsed on mobile Safari).
+  useEffect(() => {
+    const load = () => {
+      // @ts-expect-error - Tally is injected by the external script
+      if (typeof window.Tally !== "undefined") window.Tally.loadEmbeds();
+    };
+    const existing = document.querySelector<HTMLScriptElement>(
+      'script[src="https://tally.so/widgets/embed.js"]',
+    );
+    if (existing) {
+      load();
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://tally.so/widgets/embed.js";
+    script.onload = load;
+    document.body.appendChild(script);
+  }, [activeId]);
+
   if (!active) return null;
   const openRoles = active.roles.filter((r) => r.open);
   const accepting = active.open && openRoles.length > 0;
@@ -20,9 +41,6 @@ export function HiringApply({ programs }: { programs: HiringProgram[] }) {
   function select(id: string) {
     setActiveId(id);
   }
-
-  //embed for tally url
-  const tallyUrl = "https://tally.so/embed/eqbPek?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1";
 
   return (
     <section
@@ -164,13 +182,14 @@ export function HiringApply({ programs }: { programs: HiringProgram[] }) {
                 <h3 className="font-display text-[22px] leading-tight font-bold text-blue-900">
                   Apply to {active.title}
                 </h3>
-                
-                {/* Tally Iframe Embed */}
-                <iframe 
-                  src={tallyUrl}
-                  width="100%" 
-                  height="800" 
-                  style={{ border: 0, margin: 0, padding: 0 }} 
+
+                {/* Tally embed — embed.js controls height so it works on mobile */}
+                <iframe
+                  data-tally-src="https://tally.so/embed/eqbPek?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+                  loading="lazy"
+                  width="100%"
+                  height="500"
+                  style={{ border: 0, margin: 0, padding: 0 }}
                   title="MaaSec Hiring Form"
                 />
               </div>
