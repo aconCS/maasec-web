@@ -1,11 +1,64 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import type { HiringProgram } from "@/lib/content";
 import { site } from "@/lib/site";
 
-export function HiringApply({ programs }: { programs: HiringProgram[] }) {
+const TALLY_FORM = "https://tally.so/embed/eqbPek";
+
+/**
+ * Colours for everything that sits directly on the page surface. The form
+ * panel is a light card on both themes, so it isn't themed here.
+ */
+const tones = {
+  light: {
+    rule: "border-gray-300",
+    tab: "border-transparent text-gray-600 hover:text-blue-900",
+    tabOn: "border-blue-600 text-blue-900",
+    muted: "text-gray-600",
+    heading: "text-blue-900",
+    tagline: "text-blue-800",
+    body: "text-gray-700",
+    link: "text-blue-700 hover:text-blue-900",
+    accent: "text-blue-600",
+    bar: "border-blue-600",
+    filled: "text-gray-500",
+  },
+  blue: {
+    rule: "border-white/14",
+    tab: "border-transparent text-blue-300 hover:text-blue-100",
+    tabOn: "border-green-400 text-white",
+    muted: "text-blue-300",
+    heading: "text-white",
+    tagline: "text-blue-100",
+    body: "text-blue-200",
+    link: "text-white hover:text-blue-100",
+    accent: "text-green-400",
+    bar: "border-green-400",
+    filled: "text-blue-300",
+  },
+} as const;
+
+/**
+ * Rendered on both /hiring and /join so recruitment has one layout, one
+ * content source and one application form (the Tally embed). `id` is the
+ * section's anchor — override it when the page already has an #apply.
+ *
+ * Each program is deep-linkable: `#events` (or the older `?program=events` /
+ * `?team=events`) opens that tab and scrolls to the section, and choosing a
+ * tab rewrites the URL hash so the address bar is always a shareable link.
+ */
+export function HiringApply({
+  programs,
+  id = "apply",
+  theme = "light",
+}: {
+  programs: HiringProgram[];
+  id?: string;
+  theme?: keyof typeof tones;
+}) {
+  const t = tones[theme];
   const params = useSearchParams();
   const requested = params.get("program") ?? params.get("team");
   const sectionRef = useRef<HTMLElement>(null);
@@ -18,8 +71,6 @@ export function HiringApply({ programs }: { programs: HiringProgram[] }) {
     function open(programId: string | null | undefined) {
       if (!programs.some((p) => p.id === programId)) return;
       setActiveId(programId as string);
-      setStatus("idle");
-      setError("");
       // The section's top edge doesn't move when the panel swaps, so there's
       // nothing to wait for before scrolling to it.
       sectionRef.current?.scrollIntoView({ block: "start" });
@@ -60,8 +111,16 @@ export function HiringApply({ programs }: { programs: HiringProgram[] }) {
   const accepting = active.open && openRoles.length > 0;
   const isTeam = active.kind === "team";
 
-  function select(id: string) {
-    setActiveId(id);
+  function select(programId: string) {
+    setActiveId(programId);
+    // replaceState, not a hash assignment: it doesn't fire hashchange (so no
+    // scroll jump) and doesn't add a history entry per tab click. Dropping
+    // the query keeps a stale ?program= from fighting the new hash.
+    window.history.replaceState(
+      null,
+      "",
+      `${window.location.pathname}#${programId}`,
+    );
   }
 
   return (
@@ -233,9 +292,14 @@ export function HiringApply({ programs }: { programs: HiringProgram[] }) {
                   Apply to {active.title}
                 </h3>
 
-                {/* Tally embed — embed.js controls height so it works on mobile */}
+                {/* Tally embed — embed.js controls height so it works on mobile.
+                    `program` is passed along so a hidden field of that name in
+                    the Tally form records which team or project was chosen;
+                    Tally ignores it otherwise. The key remounts the iframe on
+                    tab change so embed.js loads the new URL. */}
                 <iframe
-                  data-tally-src="https://tally.so/embed/eqbPek?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+                  key={active.id}
+                  data-tally-src={`${TALLY_FORM}?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1&program=${active.id}`}
                   loading="lazy"
                   width="100%"
                   height="500"
