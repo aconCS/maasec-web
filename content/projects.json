@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-09-17T12:14:25.000Z",
+  "syncedAt": "2026-09-18T09:59:41.763Z",
   "org": "MaaSecLab",
   "orgUrl": "https://github.com/MaaSecLab",
   "repos": [
@@ -108,11 +108,11 @@
       "homepage": null,
       "language": "Shell",
       "topics": [
-        "linux",
         "automation",
-        "tools",
         "ctf-tools",
-        "maasec"
+        "linux",
+        "maasec",
+        "tools"
       ],
       "stars": 3,
       "forks": 1,
@@ -157,7 +157,7 @@
       "language": "HTML",
       "topics": [],
       "stars": 2,
-      "forks": 4,
+      "forks": 0,
       "license": "MIT License",
       "fork": true,
       "archived": false,
