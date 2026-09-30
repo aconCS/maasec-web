@@ -16,10 +16,11 @@ const columns = [
   {
     heading: "Join a team",
     links: [
-      { href: "/join?team=ctf", label: "CTF team" },
-      { href: "/join?team=consultancy", label: "Consultancy" },
-      { href: "/join?team=marketing", label: "Marketing" },
-      { href: "/join?team=swe", label: "Software Development" },
+      { href: "/join#ctf", label: "CTF team" },
+      { href: "/join#consultancy", label: "Consultancy" },
+      { href: "/join#marketing", label: "Marketing" },
+      { href: "/join#swe", label: "Software Development" },
+      { href: "/join#events", label: "Events" },
       { href: "/hiring", label: "Project hiring" },
     ],
   },

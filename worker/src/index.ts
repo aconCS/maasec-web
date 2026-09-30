@@ -33,11 +33,11 @@ type Env = {
   };
 };
 
-const TEAM_IDS = ["ctf", "consultancy", "marketing", "swe"] as const;
+const TEAM_IDS = ["ctf", "consultancy", "marketing", "swe", "events"] as const;
 type TeamId = (typeof TEAM_IDS)[number];
 
 /** Keep in sync with hiringProgramIds in src/lib/site.ts. */
-const HIRING_PROGRAMS = ["nightjar", "collab"] as const;
+const HIRING_PROGRAMS = [...TEAM_IDS, "nightjar", "collab"] as const;
 type HiringProgramId = (typeof HIRING_PROGRAMS)[number];
 
 const AFFILIATIONS = ["um-student", "other-student", "industry", "other"] as const;
