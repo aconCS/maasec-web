@@ -2,14 +2,35 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input, Textarea } from "@/components/ui/field";
 import type { HiringProgram } from "@/lib/content";
 import { site } from "@/lib/site";
 
-const TALLY_FORM = "https://tally.so/embed/eqbPek";
+type Status = "idle" | "sending" | "done" | "error";
+
+// The Cloudflare Worker in worker/ — validates the application and emails the
+// board via Resend. Same endpoint as the commission form, dispatched by "kind".
+const APPLY_ENDPOINT = process.env.NEXT_PUBLIC_APPLY_ENDPOINT;
+
+// Keep in sync with AFFILIATIONS in worker/src/index.ts.
+const affiliations = [
+  { id: "um-student", label: "Maastricht University student" },
+  { id: "other-student", label: "Student elsewhere" },
+  { id: "industry", label: "Working in industry" },
+  { id: "other", label: "Other" },
+] as const;
+
+const hours = ["Under 5", "5–10", "10–20", "20+"] as const;
+
+const selectClass =
+  "h-12 w-full rounded-sm border border-gray-300 bg-white px-4 font-body text-[15px] text-blue-900 transition-[border-color,box-shadow] duration-[180ms] focus:border-blue-600 focus:outline-none focus:ring-3 focus:ring-blue-600/35";
+
+const labelClass = "font-body text-[13px] font-medium text-blue-900";
 
 /**
  * Colours for everything that sits directly on the page surface. The form
- * panel is a light card on both themes, so it isn't themed here.
+ * panel is a white card on both themes, so it isn't themed here.
  */
 const tones = {
   light: {
@@ -42,7 +63,7 @@ const tones = {
 
 /**
  * Rendered on both /hiring and /join so recruitment has one layout, one
- * content source and one application form (the Tally embed). `id` is the
+ * content source and one application form (posted to the Worker). `id` is the
  * section's anchor — override it when the page already has an #apply.
  *
  * Each program is deep-linkable: `#events` (or the older `?program=events` /
@@ -65,6 +86,9 @@ export function HiringApply({
   const [activeId, setActiveId] = useState(
     programs.some((p) => p.id === requested) ? requested! : programs[0]?.id,
   );
+  const [status, setStatus] = useState<Status>("idle");
+  const [error, setError] = useState("");
+  const [affiliation, setAffiliation] = useState("");
 
   // The hash never reaches the server, so it can only be read after mount.
   useEffect(() => {
@@ -86,25 +110,6 @@ export function HiringApply({
 
   const active = programs.find((p) => p.id === activeId) ?? programs[0];
 
-  // Load Tally's embed script so the iframe resizes correctly on all devices
-  // (a fixed-height raw iframe renders blank/collapsed on mobile Safari).
-  useEffect(() => {
-    const load = () => {
-      // @ts-expect-error - Tally is injected by the external script
-      if (typeof window.Tally !== "undefined") window.Tally.loadEmbeds();
-    };
-    const existing = document.querySelector<HTMLScriptElement>(
-      'script[src="https://tally.so/widgets/embed.js"]',
-    );
-    if (existing) {
-      load();
-      return;
-    }
-    const script = document.createElement("script");
-    script.src = "https://tally.so/widgets/embed.js";
-    script.onload = load;
-    document.body.appendChild(script);
-  }, [activeId]);
 
   if (!active) return null;
   const openRoles = active.roles.filter((r) => r.open);
@@ -113,6 +118,8 @@ export function HiringApply({
 
   function select(programId: string) {
     setActiveId(programId);
+    setStatus("idle");
+    setError("");
     // replaceState, not a hash assignment: it doesn't fire hashchange (so no
     // scroll jump) and doesn't add a history entry per tab click. Dropping
     // the query keeps a stale ?program= from fighting the new hash.
@@ -121,6 +128,63 @@ export function HiringApply({
       "",
       `${window.location.pathname}#${programId}`,
     );
+  }
+
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!APPLY_ENDPOINT || !accepting) return;
+
+    const form = event.currentTarget;
+    const data = new FormData(form);
+
+    // Honeypot: bots fill every field, people never see this one.
+    if (data.get("company")) {
+      setStatus("done");
+      form.reset();
+      return;
+    }
+
+    setStatus("sending");
+    setError("");
+
+    try {
+      const response = await fetch(APPLY_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          kind: "hiring",
+          program: active.id,
+          // Teams have a single placeholder role, so there's nothing to pick.
+          role: isTeam ? openRoles[0]?.id : data.get("role"),
+          name: data.get("name"),
+          surname: data.get("surname"),
+          email: data.get("email"),
+          affiliation: data.get("affiliation"),
+          studentNumber: data.get("studentNumber") ?? "",
+          links: data.get("links"),
+          hours: data.get("hours"),
+          motivation: data.get("motivation"),
+        }),
+      });
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        setStatus("error");
+        setError(
+          body?.error ??
+            `The application didn't go through. Try again, or email ${site.email}.`,
+        );
+        return;
+      }
+      setStatus("done");
+      form.reset();
+      setAffiliation("");
+    } catch {
+      setStatus("error");
+      setError("You appear to be offline. Check your connection and try again.");
+    }
   }
 
   return (
@@ -269,8 +333,25 @@ export function HiringApply({
           </div>
 
           {/* Right Panel: The Form */}
-          <div className="rounded-[var(--radius-card)] bg-blue-100 p-6 sm:p-8 lg:sticky lg:top-28">
-            {!accepting ? (
+          <div className="rounded-[var(--radius-card)] bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.06)] sm:p-8 lg:sticky lg:top-28">
+            {status === "done" ? (
+              <div className="flex flex-col gap-2" role="status">
+                <span className="font-display text-[22px] leading-tight font-bold text-blue-900">
+                  Application sent.
+                </span>
+                <span className="font-body text-[15px] leading-relaxed text-gray-700">
+                  We read every application and reply by email, usually within
+                  a week.
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setStatus("idle")}
+                  className="mt-2 w-fit cursor-pointer font-body text-sm font-semibold text-blue-700 underline underline-offset-4 hover:text-blue-900"
+                >
+                  Send another application
+                </button>
+              </div>
+            ) : !accepting ? (
               <div className="flex flex-col gap-2">
                 <span className="font-display text-[22px] leading-tight font-bold text-blue-900">
                   {active.title} isn&rsquo;t hiring right now.
@@ -286,27 +367,180 @@ export function HiringApply({
                   and we&rsquo;ll tell you when roles open again.
                 </span>
               </div>
+            ) : !APPLY_ENDPOINT ? (
+              <div className="flex flex-col gap-2">
+                <span className="font-display text-[22px] leading-tight font-bold text-blue-900">
+                  Apply by email
+                </span>
+                <span className="font-body text-[15px] leading-relaxed text-gray-700">
+                  Send your name{isTeam ? "" : ", the role you want,"} and links
+                  to your work to{" "}
+                  <a
+                    href={`mailto:${site.email}?subject=${encodeURIComponent(`${active.title} application`)}`}
+                    className="font-semibold text-blue-700 underline underline-offset-4"
+                  >
+                    {site.email}
+                  </a>
+                  .
+                </span>
+              </div>
             ) : (
-              <div className="flex flex-col gap-4">
+              <form
+                key={active.id}
+                onSubmit={onSubmit}
+                className="flex flex-col gap-4"
+              >
                 <h3 className="font-display text-[22px] leading-tight font-bold text-blue-900">
                   Apply to {active.title}
                 </h3>
 
-                {/* Tally embed — embed.js controls height so it works on mobile.
-                    `program` is passed along so a hidden field of that name in
-                    the Tally form records which team or project was chosen;
-                    Tally ignores it otherwise. The key remounts the iframe on
-                    tab change so embed.js loads the new URL. */}
-                <iframe
-                  key={active.id}
-                  data-tally-src={`${TALLY_FORM}?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1&program=${active.id}`}
-                  loading="lazy"
-                  width="100%"
-                  height="500"
-                  style={{ border: 0, margin: 0, padding: 0 }}
-                  title="MaaSec Hiring Form"
+                {!isTeam && (
+                  <fieldset className="flex flex-col gap-2">
+                    <legend className={`${labelClass} mb-2`}>Role</legend>
+                    {openRoles.map((role, i) => (
+                      <label
+                        key={role.id}
+                        className="flex cursor-pointer items-center gap-3 rounded-sm border border-gray-300 bg-white px-4 py-3 font-body text-[15px] text-blue-900 has-[:checked]:border-blue-600 has-[:checked]:ring-1 has-[:checked]:ring-blue-600 has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-blue-600/35"
+                      >
+                        <input
+                          type="radio"
+                          name="role"
+                          value={role.id}
+                          required
+                          defaultChecked={i === 0 && openRoles.length === 1}
+                          className="accent-blue-600"
+                        />
+                        {role.title}
+                      </label>
+                    ))}
+                  </fieldset>
+                )}
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="hire-name" className={labelClass}>
+                      First name
+                    </label>
+                    <Input id="hire-name" name="name" required autoComplete="given-name" />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="hire-surname" className={labelClass}>
+                      Surname
+                    </label>
+                    <Input id="hire-surname" name="surname" required autoComplete="family-name" />
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="hire-email" className={labelClass}>
+                    Email
+                  </label>
+                  <Input id="hire-email" name="email" type="email" required autoComplete="email" />
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="hire-affiliation" className={labelClass}>
+                      You are
+                    </label>
+                    <select
+                      id="hire-affiliation"
+                      name="affiliation"
+                      required
+                      value={affiliation}
+                      onChange={(e) => setAffiliation(e.target.value)}
+                      className={selectClass}
+                    >
+                      <option value="" disabled>
+                        Choose one
+                      </option>
+                      {affiliations.map((a) => (
+                        <option key={a.id} value={a.id}>
+                          {a.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="hire-hours" className={labelClass}>
+                      Hours per week
+                    </label>
+                    <select
+                      id="hire-hours"
+                      name="hours"
+                      required
+                      defaultValue=""
+                      className={selectClass}
+                    >
+                      <option value="" disabled>
+                        Choose one
+                      </option>
+                      {hours.map((h) => (
+                        <option key={h} value={h}>
+                          {h}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {affiliation === "um-student" && (
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="hire-student-number" className={labelClass}>
+                      Student number
+                    </label>
+                    <Input
+                      id="hire-student-number"
+                      name="studentNumber"
+                      required
+                      inputMode="numeric"
+                      autoComplete="off"
+                    />
+                  </div>
+                )}
+
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="hire-links" className={labelClass}>
+                    GitHub, portfolio, LinkedIn, or CTFtime profile
+                  </label>
+                  <Input
+                    id="hire-links"
+                    name="links"
+                    placeholder="https://github.com/you"
+                    autoComplete="url"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="hire-motivation" className={labelClass}>
+                    {isTeam
+                      ? "Why do you want to join, and what have you done that’s close to it?"
+                      : "What would you work on, and what have you done that’s close to it?"}
+                  </label>
+                  <Textarea id="hire-motivation" name="motivation" rows={5} required />
+                </div>
+
+                <input
+                  type="text"
+                  name="company"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="hidden"
                 />
-              </div>
+
+                <Button type="submit" size="lg" disabled={status === "sending"}>
+                  {status === "sending" ? "Sending application…" : "Send application"}
+                </Button>
+                {status === "error" && (
+                  <p
+                    role="alert"
+                    className="font-body text-[13px] text-[var(--color-danger)]"
+                  >
+                    {error}
+                  </p>
+                )}
+              </form>
             )}
           </div>
         </div>
