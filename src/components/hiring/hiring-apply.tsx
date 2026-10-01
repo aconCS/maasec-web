@@ -539,8 +539,7 @@ export function HiringApply({
 
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor="hire-motivation" className={labelClass}>
-                    Why do you want to join, and what have you done that&rsquo;s
-                    close to it?
+                    Why do you want to join, and what experience do you have in this field.
                   </label>
                   <Textarea id="hire-motivation" name="motivation" rows={5} required />
                 </div>
