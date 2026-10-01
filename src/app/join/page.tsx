@@ -1,15 +1,15 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { Apply } from "@/components/join/apply";
+import { HiringApply } from "@/components/hiring/hiring-apply";
 import { Footer } from "@/components/site/footer";
 import { Nav } from "@/components/site/nav";
 import { ImageSlot } from "@/components/ui/image-slot";
-import { getJoinTeams } from "@/lib/content";
+import { getHiringPrograms } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Join",
   description:
-    "Apply to MaaSec's CTF, Bug Bounty, Marketing, or Consultancy team. No experience needed — low-friction application, fast response.",
+    "Apply to MaaSec's CTF, Consultancy, Software Development, or Events team, or to a project role on Nightjar or our open-source work. No experience needed — low-friction application, fast response.",
 };
 
 const process = [
@@ -31,7 +31,7 @@ const process = [
 ];
 
 export default async function JoinPage() {
-  const teams = await getJoinTeams();
+  const programs = await getHiringPrograms();
 
   return (
     <>
@@ -79,9 +79,25 @@ export default async function JoinPage() {
           </div>
         </section>
 
-        <Suspense fallback={null}>
-          <Apply teams={teams} />
-        </Suspense>
+        {/* Teams and projects share /hiring's layout, content and Worker path, so
+            recruitment is managed in one place whichever page a candidate
+            starts from. */}
+        <div className="bg-blue-900 pt-24">
+          <header className="px-6 pb-14 md:px-14">
+            <div className="mx-auto grid max-w-[1160px] gap-6 md:grid-cols-[1fr_minmax(0,400px)] md:items-end md:gap-16">
+              <h2 className="font-display text-[clamp(38px,5.6vw,68px)] leading-[1.05] font-extrabold tracking-[-0.04em] text-balance text-white">
+                Choose where you&rsquo;d fit.
+              </h2>
+              <p className="font-body text-[17px] leading-relaxed text-blue-200">
+                Join one of our teams, or pick a project and a role. Every
+                application goes through the same form.
+              </p>
+            </div>
+          </header>
+          <Suspense fallback={null}>
+            <HiringApply programs={programs} id="hiring" theme="blue" />
+          </Suspense>
+        </div>
       </main>
       <Footer />
     </>

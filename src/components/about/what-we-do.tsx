@@ -1,6 +1,6 @@
 "use client";
 
-import { Flag, CodeXml, Megaphone, ShieldCheck } from "lucide-react";
+import { CalendarDays, Flag, CodeXml, Megaphone, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { ButtonLink } from "@/components/ui/button";
 import type { JoinTeam } from "@/lib/content";
@@ -9,7 +9,8 @@ const ICONS: Record<string, typeof Flag> = {
   ctf: Flag,
   marketing: Megaphone,
   consultancy: ShieldCheck,
-  swe: CodeXml
+  swe: CodeXml,
+  events: CalendarDays,
 };
 
 /**
@@ -30,7 +31,7 @@ export function WhatWeDo({ teams }: { teams: JoinTeam[] }) {
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div className="flex flex-col gap-4">
             <h2 className="max-w-[620px] font-display text-[clamp(30px,3.6vw,48px)] leading-[1.06] font-bold tracking-[-0.03em] text-blue-900 text-balance">
-              Three teams. Pick the one that fits you.
+              Four teams. Pick the one that fits you.
             </h2>
           </div>
           <ButtonLink href="/join" size="lg">

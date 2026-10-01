@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function HiringPage() {
-  const programs = await getHiringPrograms();
+  const programs = await getHiringPrograms("project");
 
   return (
     <>

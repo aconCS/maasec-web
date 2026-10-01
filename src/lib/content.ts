@@ -550,10 +550,16 @@ export type HiringRole = {
 
 export type HiringProgram = {
   id: HiringProgramId;
+  /** "team" programs are the standing MaaSec teams, built from
+   * content/join-teams.json; "project" programs live in content/hiring.json. */
+  kind: "team" | "project";
   title: string;
   tagline: string;
   about: string;
   lookingFor: string[];
+  /** What a member gets out of it — shown for teams. */
+  benefits: string[];
+
   open: boolean;
   roles: HiringRole[];
   /** Public repo URL, resolved from the synced project list. */
@@ -572,15 +578,50 @@ type RawProgram = {
   roles: { id: string; title: string; summary: string; open?: boolean }[];
 };
 
-export async function getHiringPrograms(): Promise<HiringProgram[]> {
+/**
+ * Every recruitment program, in display order: the standing teams first, then
+ * the projects. Pass `kind` to get only one group (/hiring lists projects
+ * only; /join lists everything).
+ */
+export async function getHiringPrograms(
+  kind?: HiringProgram["kind"],
+): Promise<HiringProgram[]> {
   const repos = new Map(
     (projectsData.repos as RawRepo[]).map((r) => [r.name, r.url]),
   );
-  return [...(hiringData.programs as RawProgram[])]
+
+  const teams = (await getJoinTeams())
+    .filter((t) => toHiringProgram(t.id))
+    .map(
+      (t): HiringProgram => ({
+        id: t.id as HiringProgramId,
+        kind: "team",
+        title: t.title,
+        tagline: t.tagline,
+        about: "",
+        lookingFor: [],
+        benefits: t.benefits,
+        open: t.open,
+        // Teams have no separate roles; one placeholder keeps the Worker's
+        // payload identical to a project application.
+        roles: [
+          {
+            id: "member",
+            title: "Team member",
+            summary: `Join the ${t.title}.`,
+            open: t.open,
+          },
+        ],
+      }),
+    );
+
+  const projects = [...(hiringData.programs as RawProgram[])]
     .filter((p) => toHiringProgram(p.id))
     .sort((a, b) => a.order - b.order)
-    .map((p) => ({
+    .map((p): HiringProgram => ({
       id: p.id as HiringProgramId,
+      kind: "project",
+      benefits: [],
       title: p.title,
       tagline: p.tagline,
       about: p.about,
@@ -589,4 +630,7 @@ export async function getHiringPrograms(): Promise<HiringProgram[]> {
       roles: p.roles.map((r) => ({ ...r, open: r.open ?? true })),
       repoUrl: p.repo ? repos.get(p.repo) : undefined,
     }));
+
+  const all = [...teams, ...projects];
+  return kind ? all.filter((p) => p.kind === kind) : all;
 }
