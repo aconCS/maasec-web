@@ -9,7 +9,11 @@ import { site } from "@/lib/site";
 
 type Status = "idle" | "sending" | "done" | "error";
 
-// The Cloudflare Worker in worker/ — validates the application and emails the
+// Project programs (Nightjar, MaaSec collaboration) apply through Tally, which
+// asks for the role. The standing teams use the native form below.
+const TALLY_FORM = "https://tally.so/embed/eqbPek";
+
+// The Cloudflare Worker in worker/ — validates team applications and emails the
 // board via Resend. Same endpoint as the commission form, dispatched by "kind".
 const APPLY_ENDPOINT = process.env.NEXT_PUBLIC_APPLY_ENDPOINT;
 
@@ -63,7 +67,8 @@ const tones = {
 
 /**
  * Rendered on both /hiring and /join so recruitment has one layout, one
- * content source and one application form (posted to the Worker). `id` is the
+ * content source and one application panel: a Tally embed for projects, a native form
+ * posted to the Worker for teams. `id` is the
  * section's anchor — override it when the page already has an #apply.
  *
  * Each program is deep-linkable: `#events` (or the older `?program=events` /
@@ -109,6 +114,28 @@ export function HiringApply({
   }, [programs, requested]);
 
   const active = programs.find((p) => p.id === activeId) ?? programs[0];
+  const usesTally = active?.kind === "project";
+
+  // Load Tally's embed script so the iframe resizes correctly on all devices
+  // (a fixed-height raw iframe renders blank/collapsed on mobile Safari).
+  useEffect(() => {
+    if (!usesTally) return;
+    const load = () => {
+      // @ts-expect-error - Tally is injected by the external script
+      if (typeof window.Tally !== "undefined") window.Tally.loadEmbeds();
+    };
+    const existing = document.querySelector<HTMLScriptElement>(
+      'script[src="https://tally.so/widgets/embed.js"]',
+    );
+    if (existing) {
+      load();
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://tally.so/widgets/embed.js";
+    script.onload = load;
+    document.body.appendChild(script);
+  }, [activeId, usesTally]);
 
 
   if (!active) return null;
@@ -158,7 +185,7 @@ export function HiringApply({
           kind: "hiring",
           program: active.id,
           // Teams have a single placeholder role, so there's nothing to pick.
-          role: isTeam ? openRoles[0]?.id : data.get("role"),
+          role: openRoles[0]?.id,
           name: data.get("name"),
           surname: data.get("surname"),
           email: data.get("email"),
@@ -367,14 +394,34 @@ export function HiringApply({
                   and we&rsquo;ll tell you when roles open again.
                 </span>
               </div>
+            ) : usesTally ? (
+              <div className="flex flex-col gap-4">
+                <h3 className="font-display text-[22px] leading-tight font-bold text-blue-900">
+                  Apply to {active.title}
+                </h3>
+
+                {/* Tally embed — embed.js controls height so it works on mobile.
+                    `program` is passed along so a hidden field of that name in
+                    the Tally form records which project was chosen. The key
+                    remounts the iframe on tab change so embed.js loads the
+                    new URL. */}
+                <iframe
+                  key={active.id}
+                  data-tally-src={`${TALLY_FORM}?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1&program=${active.id}`}
+                  loading="lazy"
+                  width="100%"
+                  height="500"
+                  style={{ border: 0, margin: 0, padding: 0 }}
+                  title={`${active.title} application form`}
+                />
+              </div>
             ) : !APPLY_ENDPOINT ? (
               <div className="flex flex-col gap-2">
                 <span className="font-display text-[22px] leading-tight font-bold text-blue-900">
                   Apply by email
                 </span>
                 <span className="font-body text-[15px] leading-relaxed text-gray-700">
-                  Send your name{isTeam ? "" : ", the role you want,"} and links
-                  to your work to{" "}
+                  Send your name and links to your work to{" "}
                   <a
                     href={`mailto:${site.email}?subject=${encodeURIComponent(`${active.title} application`)}`}
                     className="font-semibold text-blue-700 underline underline-offset-4"
@@ -394,27 +441,6 @@ export function HiringApply({
                   Apply to {active.title}
                 </h3>
 
-                {!isTeam && (
-                  <fieldset className="flex flex-col gap-2">
-                    <legend className={`${labelClass} mb-2`}>Role</legend>
-                    {openRoles.map((role, i) => (
-                      <label
-                        key={role.id}
-                        className="flex cursor-pointer items-center gap-3 rounded-sm border border-gray-300 bg-white px-4 py-3 font-body text-[15px] text-blue-900 has-[:checked]:border-blue-600 has-[:checked]:ring-1 has-[:checked]:ring-blue-600 has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-blue-600/35"
-                      >
-                        <input
-                          type="radio"
-                          name="role"
-                          value={role.id}
-                          required
-                          defaultChecked={i === 0 && openRoles.length === 1}
-                          className="accent-blue-600"
-                        />
-                        {role.title}
-                      </label>
-                    ))}
-                  </fieldset>
-                )}
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="flex flex-col gap-1.5">
@@ -513,9 +539,8 @@ export function HiringApply({
 
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor="hire-motivation" className={labelClass}>
-                    {isTeam
-                      ? "Why do you want to join, and what have you done that’s close to it?"
-                      : "What would you work on, and what have you done that’s close to it?"}
+                    Why do you want to join, and what have you done that&rsquo;s
+                    close to it?
                   </label>
                   <Textarea id="hire-motivation" name="motivation" rows={5} required />
                 </div>
