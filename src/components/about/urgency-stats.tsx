@@ -23,13 +23,13 @@ const stats = [
   {
     key: "smb",
     n: "13%",
-    t: "of the smallest Dutch businesses have 10 or more of 12 standard security measures in place",
+    t: "of the smallest Dutch firms have most basic security measures in place",
     lead: false,
   },
   {
     key: "percent",
     n: "88%",
-    t: "of breaches at small and medium-sized businesses involve ransomware",
+    t: "of small-business breaches involve ransomware",
     lead: false,
   },
 ] as const;
