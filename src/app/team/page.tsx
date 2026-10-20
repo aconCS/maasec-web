@@ -10,7 +10,7 @@ import { getJoinTeams, getTeamGroups } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Team",
   description:
-    "Meet MaaSec's board, CTF team, marketing, and consultancy teams — Maastricht University's student cybersecurity organisation.",
+    "Meet MaaSec's board and the volunteer teams behind our security assessments, CTF, software, and events.",
 };
 
 /**

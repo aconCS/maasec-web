@@ -11,7 +11,7 @@ import { getJoinTeams } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Software Development",
   description:
-    "MaaSec's student software team: a supervised discover-design-build-ship process for organisations that need something real built, and the team behind Almo.",
+    "MaaSec's volunteer software team: a supervised discover-design-build-ship process for organisations that need something real built, and the team behind Almo.",
 };
 
 export default async function SoftwarePage() {
@@ -44,7 +44,7 @@ export default async function SoftwarePage() {
               style={{ ["--reveal-delay" as string]: "120ms" }}
               className="max-w-[600px] font-body text-[17px] leading-relaxed text-gray-700"
             >
-              A focused, dedicated student team building, and delivering
+              A focused, dedicated volunteer team building, and delivering
               meaningful digital products. Our expertise is currently being
               applied to Almo — an interactive study app designed around the
               real needs of medical students.

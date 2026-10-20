@@ -11,15 +11,15 @@ export function JoinCta() {
       >
         <span className="whitespace-nowrap">Join our team.</span>
         <br />
-        <span className="whitespace-nowrap">Learn from professionals.</span>
+        <span className="whitespace-nowrap">Protect your community.</span>
       </h2>
       <p
         data-reveal
         style={{ ["--reveal-delay" as string]: "120ms" }}
         className="max-w-[480px] font-body text-base leading-relaxed text-blue-100"
       >
-        Weekly meetups, a well-established cybersecurity presence, and an
-        ever-growing community.
+        Volunteer with a growing group of people who use their security
+        skills to help local organisations stay safe.
       </p>
       <div
         data-reveal

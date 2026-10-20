@@ -13,19 +13,19 @@ export async function Hero() {
           <div className="flex flex-col gap-8">
             <div className="flex w-fit flex-col gap-2">
               <h1 className="font-display text-[clamp(88px,10.5vw,150px)] leading-[0.82] font-extrabold tracking-[-0.055em] text-blue-900">
-                BREAK
+                PROTECT
                 <br />
-                THINGS
+                LOCAL
                 <span className="text-blue-400">.</span>
               </h1>
               <p className="w-full text-justify [text-align-last:justify] font-serif text-[clamp(18px,4vw,46px)] leading-[1.12] font-medium tracking-[-0.015em] text-gray-800 italic">
-                and learn to defend them.
+                free security for our neighbours.
               </p>
             </div>
 
             <div className="flex flex-wrap gap-3">
               <ButtonLink href="/join" size="lg">
-                Pick your team
+                Volunteer with us
               </ButtonLink>
               <ButtonLink href="/events" variant="ghost" size="lg">
                 <CalendarIcon />
@@ -35,7 +35,7 @@ export async function Hero() {
 
             <div className="flex flex-col gap-3.5 pt-2">
               <span className="font-mono text-[11px] leading-none tracking-[0.16em] text-gray-600 uppercase">
-                MaaSec has hosted industry experts from
+                Our past speakers come from
               </span>
               <div className="flex flex-wrap items-baseline gap-x-8 gap-y-2">
                 {speakers.map((name) => (

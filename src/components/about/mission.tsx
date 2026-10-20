@@ -15,18 +15,18 @@ gsap.registerPlugin(useGSAP);
 const stages = [
   {
     Icon: Construction,
-    title: "Lower the barrier to entry",
-    body: "No certifications, no prior coursework needed. If you're curious, there's a seat for you.",
+    title: "Find the weak spots",
+    body: "Free security assessments for organisations that can't afford a professional one.",
   },
   {
     Icon: BicepsFlexed,
-    title: "Build real, provable skill",
-    body: "CTF placements, bug bounty reports, and consultancy work. Gain valuable experience.",
+    title: "Fix what matters",
+    body: "Clear, practical advice, ordered by what will make the biggest difference.",
   },
   {
     Icon: Users,
-    title: "Close the workforce gap",
-    body: "4.8 million security roles sit empty worldwide. We're training people to fill them.",
+    title: "Build awareness",
+    body: "Training and public events that help people recognise attacks and stop them.",
   },
 ];
 
@@ -106,7 +106,7 @@ export function Mission() {
           {/* Capped by measure rather than a pixel width so it fills its column
               at lg+ and still breaks at a readable line length when stacked. */}
           <p className="max-w-[58ch] font-body text-[16.5px] leading-[1.6] font-medium text-gray-700">
-            MaaSec empowers students to become the next generation of cybersecurity professionals. We create opportunities to learn from industry experts, build practical skills, gain real-world experience, and connect with a diverse cybersecurity community. Through workshops, professional events, and international CTF competitions, we aim to bridge the gap between university and industry while giving every student the opportunity to learn, compete, and grow.
+            MaaSec is a non-profit association that protects small businesses, non-profits and community organisations in the Maastricht and Heuvelland region that cannot afford professional cybersecurity services. Our volunteer members provide free security assessments, advice and awareness training, and run public talks, workshops and capture-the-flag events. All income is reinvested in our activities and is not distributed to members.
           </p>
         </div>
 

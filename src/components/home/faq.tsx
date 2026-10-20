@@ -1,39 +1,40 @@
 "use client";
 
 import { useState } from "react";
+import { site } from "@/lib/site";
 
 const faqs = [
   {
     q: "What is MaaSec?",
-    a: "MaaSec is Maastricht University's student cybersecurity organisation and ACM chapter — the Netherlands' 3rd-ranked university CTF team, running weekly labs, competitions, and real consultancy work.",
+    a: "MaaSec is a non-profit association that protects small businesses, non-profits and community organisations in the Maastricht and Heuvelland region that can't afford professional cybersecurity services.",
   },
   {
-    q: "Is there a student cybersecurity club at Maastricht University?",
-    a: "Yes — MaaSec. We're Maastricht University's cybersecurity organisation and ACM chapter, open to any student regardless of study background or prior experience.",
+    q: "Who can get help from MaaSec?",
+    a: "Small businesses, non-profits, foundations, clubs and other community organisations in the Maastricht and Heuvelland region that don't have the budget for a professional security provider.",
   },
   {
-    q: "How do I join a CTF team in the Netherlands?",
-    a: "Apply through MaaSec's Join page — no certifications or prior coursework needed. You'll have a short chat with the CTF team lead, then start training from wherever your current skill level is.",
+    q: "Is it really free?",
+    a: "Yes. Our assessments, advice and awareness training cost you nothing. Our members volunteer their time, and all of our income is reinvested in our activities. None of it is distributed to members.",
   },
   {
-    q: "Do I need coding or hacking experience to join?",
-    a: "No. MaaSec welcomes complete beginners — no certifications or prior coursework needed. Mentorship from senior members takes you from your first lab to your first real competition.",
+    q: "What does a security assessment involve?",
+    a: "We look at how your organisation works day to day, from accounts and devices to your website and the way you handle data, and point out the weak spots. You get practical advice, ordered by what matters most. Experienced members check every review before it reaches you.",
   },
   {
-    q: "Which teams can I join?",
-    a: "CTF, Marketing, Consultancy, or Software Development — each with mentorship from senior members. Pick one on the Join page.",
+    q: "How do we request an assessment?",
+    a: `Email us at ${site.email} with a short description of your organisation and what worries you. We'll get back to you to plan the next steps.`,
   },
   {
-    q: "What is ACM, and what does it mean that MaaSec is an ACM chapter?",
-    a: "ACM (the Association for Computing Machinery) is the world's largest computing society. As Maastricht University's official ACM chapter, MaaSec's members get access to ACM's global network, resources, and events alongside everything we run locally.",
+    q: "Do you run events for the public?",
+    a: "Yes. We organise public talks, workshops and capture-the-flag events. Check the Events page for what's coming up.",
+  },
+  {
+    q: "Can I volunteer with MaaSec?",
+    a: "Yes. Apply through the Join page and pick a team: CTF, Consultancy, Software Development or Events. You don't need certifications, and experienced members help you get started.",
   },
   {
     q: "How competitive is MaaSec's CTF team?",
-    a: "We're the Netherlands' 3rd-ranked CTF team, competing internationally as MaaSec. Our team trains members from complete beginner to competition-ready, with mentorship from senior players.",
-  },
-  {
-    q: "What will I actually walk away with?",
-    a: "Real, provable skill — CTF placements, bug bounty reports, and consultancy work you can put on your CV.",
+    a: "We're one of the Netherlands' top-ranked CTF teams and compete internationally as MaaSec.",
   },
 ];
 

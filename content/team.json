@@ -3,7 +3,7 @@
     {
       "title": "Our board",
       "groupId": "board",
-      "": "Four people keeping the organisation running, the University happy, and the teams winning.",
+      "": "Four people keeping the organisation running, our partners happy, and the teams winning.",
       "surface": "blue",
       "roles": null,
       "order": 0
@@ -20,7 +20,7 @@
     {
       "title": "Consultancy team",
       "groupId": "consultancy",
-      "blurb": "Supervised security reviews for organisations in the region. Students scope the engagement with the client and do the work; senior members review everything before it is delivered.",
+      "blurb": "Free security assessments for small businesses, non-profits and community organisations in the region. Members scope the engagement with the client and do the work; experienced members review everything before it is delivered.",
       "surface": "white",
       "roles": null,
       "memberCount": null,
@@ -38,7 +38,7 @@
     {
       "title": "Marketing team",
       "groupId": "marketing",
-      "blurb": "Events, socials, and outreach that keep the labs full — running workshops and speaker nights, handling partner communications, and putting MaaSec in front of students who haven't found us yet.",
+      "blurb": "Events, socials, and outreach that keep the labs full — running workshops and speaker nights, handling partner communications, and putting MaaSec in front of people who haven't found us yet.",
       "surface": "blue",
       "roles": null,
       "memberCount": 1,

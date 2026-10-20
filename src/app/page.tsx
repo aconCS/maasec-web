@@ -29,17 +29,17 @@ export default function HomePage() {
             </>
           }
           buttonHref="/events"
-          buttonLabel="Start at your first lab"
+          buttonLabel="Come to your first workshop"
           steps={[
             {
               num: "01",
-              title: "Show up to a lab",
+              title: "Show up to a workshop",
               body: "No prep needed, bring a laptop.",
             },
             {
               num: "02",
               title: "Learn the tools",
-              body: "A mentor will guide you through the process.",
+              body: "A volunteer will guide you through it.",
             },
             {
               num: "03",

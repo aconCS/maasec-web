@@ -30,7 +30,7 @@ export default function PrivacyPage() {
           </p>
 
           <p className={p}>
-            MaaSec is a student organisation, not a company. We collect as
+            MaaSec is a non-profit association, not a company. We collect as
             little personal data as we can get away with, and never sell it
             or use it for advertising. This page explains what we collect,
             why, and what you can do about it — in line with the EU General
@@ -40,8 +40,8 @@ export default function PrivacyPage() {
 
           <h2 className={h2}>Who&rsquo;s responsible for your data</h2>
           <p className={p}>
-            MaaSec, Maastricht University&rsquo;s student cybersecurity
-            organisation and ACM chapter, is the data controller for the
+            MaaSec, a non-profit cybersecurity association based in
+            Maastricht, is the data controller for the
             information described on this page. Reach us at{" "}
             <a
               href={`mailto:${site.email}`}
