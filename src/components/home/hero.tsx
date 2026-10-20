@@ -13,7 +13,7 @@ export async function Hero() {
           <div className="flex flex-col gap-8">
             <div className="flex w-fit flex-col gap-2">
               <h1 className="font-display text-[clamp(88px,10.5vw,150px)] leading-[0.82] font-extrabold tracking-[-0.055em] text-blue-900">
-                PROTECT
+                DEFEND
                 <br />
                 LOCAL
                 <span className="text-blue-400">.</span>
