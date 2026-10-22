@@ -10,8 +10,8 @@
   {
     "title": "Consultancy team",
     "teamId": "consultancy",
-    "tagline": "Deliver supervised security reviews for real organisations in the region.",
-    "benefits": "Real deliverables for your CV\nSenior-reviewed work\nA direct pipeline to partner companies",
+    "tagline": "Carry out free security assessments for small organisations in the region.",
+    "benefits": "Help organisations that can't afford professional security\nEvery review checked by experienced members\nWork directly with local businesses and non-profits",
     "open": true,
     "order": 1
   },
@@ -26,8 +26,8 @@
   {
     "title": "Events team",
     "teamId": "events",
-    "tagline": "Want Google engineers on speed dial? Join the team that books them.",
-    "benefits": "Our method for booking Google & Microsoft speakers\nA fast route to FAANG referrals\nPersonal connections at top tech companies",
+    "tagline": "Bring security talks, workshops and CTFs to the public. Join the team that runs them.",
+    "benefits": "Book speakers from companies like Google and Microsoft\nOrganise public talks, workshops and CTF events\nGrow MaaSec's reach across the region",
     "open": true,
     "order": 3
   }

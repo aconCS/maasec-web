@@ -5,9 +5,9 @@
  */
 export const site = {
   name: "MaaSec",
-  tagline: "Break things. And then learn to defend them.",
+  tagline: "Free cybersecurity for those who can't afford it.",
   description:
-    "Maastricht University's student cybersecurity organisation and ACM chapter. Weekly hands-on labs, an international CTF team, bug bounty hunting, and supervised security consultancy.",
+    "MaaSec is a non-profit association that protects small businesses, non-profits and community organisations in the Maastricht and Heuvelland region with free security assessments, advice and awareness training.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://maasec.com",
   email: "acm@maasec.com",
   social: {

@@ -21,15 +21,15 @@ const stats = [
     lead: false,
   },
   {
-    key: "jobs",
-    n: "4.8M",
-    t: "security jobs unfilled worldwide",
+    key: "smb",
+    n: "13%",
+    t: "of the smallest Dutch firms have most basic security measures in place",
     lead: false,
   },
   {
     key: "percent",
-    n: "44%",
-    t: "of breaches involve ransomware",
+    n: "88%",
+    t: "of small-business breaches involve ransomware",
     lead: false,
   },
 ] as const;
@@ -60,7 +60,7 @@ function ClockIcon() {
   return <Clock aria-hidden className="h-9 w-9 shrink-0 text-blue-900" strokeWidth={1.75} />;
 }
 
-function JobsIcon() {
+function SmbIcon() {
   return <Briefcase aria-hidden className="h-9 w-9 shrink-0 text-blue-900" strokeWidth={1.75} />;
 }
 
@@ -71,7 +71,7 @@ function RansomIcon() {
 const graphics = {
   cost: MoneyGraphic,
   clock: ClockIcon,
-  jobs: JobsIcon,
+  smb: SmbIcon,
   percent: RansomIcon,
 };
 

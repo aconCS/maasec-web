@@ -9,7 +9,7 @@ import { getPastEvents, getUpcomingEvents } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Events",
   description:
-    "Upcoming CTF sessions, bug bounty pairings, and labs from MaaSec — Maastricht University's cybersecurity student organisation.",
+    "Upcoming talks, workshops, and capture-the-flag events from MaaSec, the non-profit protecting small organisations in the Maastricht and Heuvelland region.",
 };
 
 export default async function EventsPage() {

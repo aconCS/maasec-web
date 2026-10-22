@@ -8,22 +8,22 @@ import { useState } from "react";
 // renders for those rather than linking somewhere half-built.
 const offers = [
   {
-    title: "Capture the Flag",
-    desc: "We compete internationally as MaaSec and rank among the Netherlands' best teams. Welcoming beginners wanting to learn and experienced students looking to contribute to the team.",
-    href: "/ctf",
+    title: "Free security assessments",
+    desc: "Our volunteers review the security of small businesses, non-profits and community organisations in the region, free of charge. You get practical advice you can act on, and experienced members check every review before it reaches you.",
   },
   {
-    title: "Weekly labs",
-    desc: "Hands-on sessions on campus every week. Learn to use cybersecurity tools for defending, attacking, and everything in between.",
+    title: "Workshops & training",
+    desc: "Public talks and hands-on workshops, plus awareness training for the people behind local organisations: spotting phishing, securing accounts, and knowing what to do when something goes wrong.",
     href: "/events",
   },
   {
-    title: "Consultancy",
-    desc: "Supervised security reviews for organisations in the region. Make real impact and show something concrete on your CV.",
+    title: "Capture the Flag",
+    desc: "We compete internationally as MaaSec and rank among the Netherlands' best teams. Our CTF events welcome complete beginners and experienced players alike.",
+    href: "/ctf",
   },
   {
     title: "Software Development",
-    desc: "Currently building Almo, a Duolingo-style app helping medicine students study smarter. Join a small team shipping real, used software.",
+    desc: "Currently building Almo, a Duolingo-style app helping medicine students study smarter. A small volunteer team shipping real, used software.",
     href: "/software",
   },
 ];

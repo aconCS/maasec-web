@@ -13,7 +13,7 @@ import { ordinal } from "@/lib/format";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Why MaaSec exists: lower the barrier into cybersecurity, build provable skill, and help close the security workforce gap.",
+    "Why MaaSec exists: free security assessments, advice and awareness training for small organisations in the Maastricht and Heuvelland region that can't afford professional help.",
 };
 
 const members = [
@@ -57,21 +57,22 @@ export default async function AboutPage() {
             <div className="flex flex-col gap-7">
               <div className="flex flex-col gap-4">
                 <p className="font-body text-[17px] leading-[1.65] text-gray-700">
-                  We started MaaSec because we kept meeting students who were
-                  genuinely interested in cybersecurity, but didn&rsquo;t know
-                  where to begin. The resources exist out there, but the journey
-                  wasn&rsquo;t always clear. Many had the curiosity to learn, but
-                  lacked the guidance and community to take their first steps.
+                  Small businesses, non-profits and community organisations
+                  face the same attacks as large companies, but most can&rsquo;t
+                  afford professional security help. Many don&rsquo;t know
+                  where to start, and a single phishing email or ransomware
+                  infection can be enough to put them out of action.
                 </p>
                 <p className="font-body text-[17px] leading-[1.65] text-gray-700">
-                  Today, MaaSec creates a pathway from complete beginner to
-                  discovering real-world vulnerabilities through weekly labs, our
-                  CTF team, and real consultancy services.
+                  MaaSec exists to close that gap. Our volunteer members carry
+                  out free security assessments, give practical advice and run
+                  awareness training, and we organise public talks, workshops
+                  and capture-the-flag events for anyone who wants to learn.
                 </p>
               </div>
               <p className="font-display text-[26px] leading-[1.32] font-semibold tracking-[-0.02em] text-blue-900 text-pretty">
-                Build practical skills through projects, CTFs, and real-world
-                research.
+                Good security shouldn&rsquo;t depend on the size of your
+                budget.
               </p>
             </div>
           </div>
@@ -94,7 +95,7 @@ export default async function AboutPage() {
             data-reveal
             className="font-display text-[clamp(30px,3.6vw,48px)] leading-[1.08] font-bold tracking-[-0.03em] text-blue-900"
           >
-            Labs, competitions, and everything between
+            Workshops, competitions, and everything between
           </h2>
           {/*
             Bento grid sized to each photo's real aspect ratio (checked via

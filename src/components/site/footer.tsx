@@ -59,8 +59,8 @@ export function Footer() {
             </span>
           </div>
           <p className="max-w-[300px] font-body text-[15px] leading-relaxed text-blue-200">
-            Maastricht University&rsquo;s student cybersecurity organisation and
-            ACM chapter.
+            A non-profit association protecting small organisations in the
+            Maastricht and Heuvelland region.
           </p>
         </div>
 
@@ -91,7 +91,7 @@ export function Footer() {
       <div className="flex flex-col gap-3 border-t border-blue-200/16 pt-10">
         <span className={`${eyebrow} !text-white`}>Work with us</span>
         <span className="max-w-[420px] font-body text-base leading-relaxed text-blue-200">
-          Guest speaking, sponsorship, or a security review. Write to{" "}
+          Need a free security review, or want to support our work? Write to{" "}
           <a
             href={`mailto:${site.email}`}
             className="text-white underline underline-offset-2"
@@ -104,8 +104,8 @@ export function Footer() {
 
       <div className="flex flex-wrap items-center justify-between gap-6 pt-2">
         <span className="font-body text-[13px] leading-normal text-gray-500">
-          © {new Date().getFullYear()} MaaSec · Maastricht University · ACM
-          student chapter
+          © {new Date().getFullYear()} MaaSec · Non-profit association ·
+          Maastricht
         </span>
         <div className="flex items-center gap-6">
           <Link

@@ -6,8 +6,9 @@ export function StatBand() {
         $11.8T
       </span>
       <p className="max-w-[720px] font-serif text-[22px] leading-[1.5] font-bold text-blue-100 italic text-pretty">
-        is what cybercrime costs the world every year, all while 4.8 million
-        security jobs sit unfilled.
+        is what cybercrime costs the world every year, yet only 13% of the
+        smallest Dutch businesses have most standard security measures in
+        place.
       </p>
     </section>
   );
