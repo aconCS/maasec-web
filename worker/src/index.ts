@@ -19,6 +19,13 @@ type Env = {
   MAIL_TO: string;
   /** Where AI pentest requests land; falls back to MAIL_TO. */
   PENTEST_MAIL_TO?: string;
+  /**
+   * Google Apps Script web app that appends each lead to the leads Sheet,
+   * and the shared token it checks. Both are secrets (`wrangler secret put`);
+   * while either is missing, leads are only emailed.
+   */
+  SHEET_WEBHOOK_URL?: string;
+  SHEET_TOKEN?: string;
   /** Resend API key — set via `wrangler secret put`, never in wrangler.jsonc. */
   RESEND_API_KEY?: string;
   /**
@@ -114,8 +121,15 @@ type HiringApplication = {
   motivation: string;
 };
 
+/** The part of the Workers runtime context this Worker uses. */
+type Ctx = { waitUntil(promise: Promise<unknown>): void };
+
+/** Public site, for links in emails. */
+const SITE_URL = "https://maasec.com";
+
 type PentestRequest = {
   lang: "nl" | "en";
+  sourcePage: string;
   name: string;
   email: string;
   organisation: string;
@@ -308,8 +322,15 @@ function parseTracking(input: unknown): Record<string, string> {
   return tracking;
 }
 
+/** Path of the page a form was sent from, e.g. /grants/ai-pentest/ww. */
+function parseSourcePage(input: unknown): string {
+  if (typeof input !== "string") return "";
+  const value = input.trim();
+  return /^\/[\w\-./]{0,199}$/.test(value) ? value : "";
+}
+
 /**
- * Lead form on /grants/ai-pentest/{nl,en}. The authorisation box must be
+ * Lead form on /grants/ai-pentest/{nl,en,ww}. The authorisation box must be
  * ticked: we only ever test a site its owner has asked us to, and the signed
  * scope agreement that follows is the real permission.
  */
@@ -362,6 +383,7 @@ function parsePentest(input: unknown, lang: PentestLang): PentestRequest | strin
 
   return {
     lang,
+    sourcePage: parseSourcePage(data.source_page),
     name,
     email,
     organisation,
@@ -499,13 +521,202 @@ async function sendHiringMail(app: HiringApplication, env: Env): Promise<boolean
   return true;
 }
 
+type ChecklistSignup = {
+  email: string;
+  name: string;
+  organisation: string;
+  location: string;
+  newsletter: boolean;
+  sourcePage: string;
+  tracking: Record<string, string>;
+};
+
+/**
+ * Free security checklist signup from /grants/ai-pentest/ww/checklist and
+ * the guide pages. Only the email address is required.
+ */
+function parseChecklist(input: unknown): ChecklistSignup | string {
+  if (typeof input !== "object" || input === null) return "Invalid request.";
+  const data = input as Record<string, unknown>;
+  const str = (v: unknown) => (typeof v === "string" ? v.trim() : "");
+
+  const email = str(data.email);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+    return "Enter a valid email address.";
+  }
+
+  return {
+    email,
+    name: str(data.name).slice(0, 80),
+    organisation: str(data.organisation).slice(0, 160),
+    location: str(data.location).slice(0, 80),
+    newsletter: data.newsletter === true,
+    sourcePage: parseSourcePage(data.source_page),
+    tracking: parseTracking(data.tracking),
+  };
+}
+
+/**
+ * One row for the leads Sheet. Keys must match the Sheet's columns exactly;
+ * missing values are empty strings.
+ */
+type SheetLead = Record<
+  | "received_at" | "lang" | "name" | "email" | "organisation" | "orgType"
+  | "website" | "location" | "message" | "authorised"
+  | "gclid" | "gbraid" | "wbraid"
+  | "utm_source" | "utm_medium" | "utm_campaign" | "utm_term" | "utm_content"
+  | "lead_type" | "source_page" | "newsletter",
+  string
+>;
+
+function sheetTracking(tracking: Record<string, string>) {
+  const keys = ["gclid", "gbraid", "wbraid", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"] as const;
+  return Object.fromEntries(keys.map((key) => [key, tracking[key] ?? ""])) as Pick<SheetLead, (typeof keys)[number]>;
+}
+
+/**
+ * Copies a lead to the Sheet in the background, after the email has gone
+ * out. Never delays or fails the form: errors are swallowed, and nothing
+ * here logs the token.
+ */
+function postToSheet(lead: SheetLead, env: Env, ctx: Ctx): void {
+  if (!env.SHEET_WEBHOOK_URL || !env.SHEET_TOKEN) return;
+  ctx.waitUntil(
+    fetch(env.SHEET_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: env.SHEET_TOKEN, lead }),
+    }).catch(() => {}),
+  );
+}
+
+function pentestSheetLead(lead: PentestRequest, receivedAt: Date): SheetLead {
+  return {
+    received_at: receivedAt.toISOString(),
+    lang: lead.lang,
+    name: lead.name,
+    email: lead.email,
+    organisation: lead.organisation,
+    orgType: lead.orgType,
+    website: lead.website,
+    location: lead.location,
+    message: lead.message,
+    authorised: "yes",
+    ...sheetTracking(lead.tracking),
+    lead_type: "pentest",
+    source_page: lead.sourcePage,
+    newsletter: "no",
+  };
+}
+
+function checklistSheetLead(signup: ChecklistSignup, receivedAt: Date): SheetLead {
+  return {
+    received_at: receivedAt.toISOString(),
+    lang: "en",
+    name: signup.name,
+    email: signup.email,
+    organisation: signup.organisation,
+    orgType: "",
+    website: "",
+    location: signup.location,
+    message: "",
+    authorised: "",
+    ...sheetTracking(signup.tracking),
+    lead_type: "checklist",
+    source_page: signup.sourcePage,
+    newsletter: signup.newsletter ? "yes" : "no",
+  };
+}
+
+async function sendResend(
+  env: Env,
+  tag: string,
+  message: { to: string; subject: string; text: string; reply_to?: string },
+): Promise<boolean> {
+  if (!env.RESEND_API_KEY) {
+    console.info(`[${tag}] RESEND_API_KEY unset — would have sent to ${message.to}:\n${message.text}`);
+    return true;
+  }
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ from: env.MAIL_FROM, ...message }),
+  });
+  if (!response.ok) {
+    console.error(`[${tag}] Resend error`, response.status, await response.text());
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Emails the subscriber the checklist link. The text is fixed: nothing the
+ * visitor typed goes into it, so the form can't be used to send someone
+ * else a message of the sender's choosing.
+ */
+async function sendChecklistMail(signup: ChecklistSignup, env: Env): Promise<boolean> {
+  const text = [
+    "Hi,",
+    "",
+    "Here's your free 1-page cybersecurity checklist for small organisations:",
+    `${SITE_URL}/grants/ai-pentest/ww/checklist/download`,
+    "",
+    ...(signup.newsletter
+      ? [
+          "You also asked for MaaSec's monthly security tips. To stop them at any",
+          "time, reply to any tips email with \"unsubscribe\".",
+          "",
+        ]
+      : []),
+    "Run an organisation with a website? Our volunteer cybersecurity",
+    "specialists offer a free AI penetration test:",
+    `${SITE_URL}/grants/ai-pentest/ww`,
+    "",
+    "MaaSec, a volunteer-run cybersecurity non-profit association from",
+    "Maastricht, the Netherlands, helping small organisations everywhere.",
+    "",
+    "You received this because this address was entered on maasec.com.",
+    "If that wasn't you, ignore this email and we won't contact you again.",
+  ].join("\n");
+
+  return sendResend(env, "checklist", {
+    to: signup.email,
+    subject: "Your free MaaSec security checklist",
+    reply_to: env.MAIL_TO,
+    text,
+  });
+}
+
+/** Short heads-up to the board about a checklist signup. */
+function checklistNotice(signup: ChecklistSignup, receivedAt: Date): string {
+  const utm = Object.entries(signup.tracking).map(([key, value]) => `  ${key.padEnd(13)} ${value}`);
+  return [
+    `Email:         ${signup.email}`,
+    `First name:    ${signup.name || "(none)"}`,
+    `Organisation:  ${signup.organisation || "(none)"}`,
+    `Country:       ${signup.location || "(none)"}`,
+    `Monthly tips:  ${signup.newsletter ? "yes" : "no"}`,
+    `Page:          ${signup.sourcePage || "(unknown)"}`,
+    `Received:      ${receivedAt.toISOString()}`,
+    "",
+    "Source:",
+    ...(utm.length > 0 ? utm : ["  (no ad or utm tags)"]),
+  ].join("\n");
+}
+
 /** Google Ads offline-conversion time format: "yyyy-mm-dd hh:mm:ss+00:00". */
 function adsConversionTime(date: Date): string {
   return `${date.toISOString().slice(0, 19).replace("T", " ")}+00:00`;
 }
 
-async function sendPentestMail(lead: PentestRequest, env: Env): Promise<boolean> {
-  const receivedAt = new Date();
+async function sendPentestMail(
+  lead: PentestRequest,
+  receivedAt: Date,
+  env: Env,
+): Promise<boolean> {
   const { gclid, gbraid, wbraid } = lead.tracking;
   const clickId = gclid ?? gbraid ?? wbraid;
   const clickIdName = gclid ? "gclid" : gbraid ? "gbraid" : wbraid ? "wbraid" : "";
@@ -518,6 +729,7 @@ async function sendPentestMail(lead: PentestRequest, env: Env): Promise<boolean>
     `Contact:       ${lead.name}`,
     `Email:         ${lead.email}`,
     `Language:      ${lead.lang}`,
+    `Page:          ${lead.sourcePage || "(unknown)"}`,
     `Received:      ${receivedAt.toISOString()}`,
     "",
     "Message:",
@@ -570,7 +782,7 @@ async function sendPentestMail(lead: PentestRequest, env: Env): Promise<boolean>
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: Ctx): Promise<Response> {
     const cors = corsHeaders(request, env);
 
     if (request.method === "OPTIONS") {
@@ -608,8 +820,9 @@ export default {
 
     // One endpoint, several shapes: the join form (default), the software
     // team's commission form ("kind": "commission"), project hiring on
-    // /hiring ("kind": "hiring"), and pentest requests from
-    // /grants/ai-pentest ("kind": "pentest"). Keeping them on the
+    // /hiring ("kind": "hiring"), pentest requests from
+    // /grants/ai-pentest ("kind": "pentest"), and security checklist
+    // signups ("kind": "checklist"). Keeping them on the
     // same Worker avoids a second URL, secret, and deploy for one more
     // form with an identical trust boundary.
     const kind = (body as Record<string, unknown> | null)?.kind;
@@ -629,16 +842,45 @@ export default {
       return json({ ok: true }, 200, cors);
     }
 
+    if (kind === "checklist") {
+      const parsed = parseChecklist(body);
+      if (typeof parsed === "string") {
+        return json({ error: parsed }, 400, cors);
+      }
+      const receivedAt = new Date();
+      const sent = await sendChecklistMail(parsed, env);
+      if (!sent) {
+        return json(
+          { error: "We couldn't send the checklist right now. Try again shortly." },
+          502,
+          cors,
+        );
+      }
+      // The board notice and the Sheet copy are extras: neither may delay
+      // or fail the signup.
+      ctx.waitUntil(
+        sendResend(env, "checklist-notice", {
+          to: env.PENTEST_MAIL_TO || env.MAIL_TO,
+          subject: `[Checklist signup] ${parsed.email}`,
+          text: checklistNotice(parsed, receivedAt),
+        }).catch(() => false),
+      );
+      postToSheet(checklistSheetLead(parsed, receivedAt), env, ctx);
+      return json({ ok: true }, 200, cors);
+    }
+
     if (kind === "pentest") {
       const lang = pentestLang(body);
       const parsed = parsePentest(body, lang);
       if (typeof parsed === "string") {
         return json({ error: parsed }, 400, cors);
       }
-      const sent = await sendPentestMail(parsed, env);
+      const receivedAt = new Date();
+      const sent = await sendPentestMail(parsed, receivedAt, env);
       if (!sent) {
         return json({ error: PENTEST_MESSAGES[lang].sendFailed }, 502, cors);
       }
+      postToSheet(pentestSheetLead(parsed, receivedAt), env, ctx);
       return json({ ok: true }, 200, cors);
     }
 

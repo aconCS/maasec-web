@@ -1,4 +1,6 @@
 import type { MetadataRoute } from "next";
+import { guides } from "@/components/ww/guides";
+import { wwPaths } from "@/components/ww/paths";
 import { getLearnEntries } from "@/lib/content";
 import { site } from "@/lib/site";
 
@@ -19,6 +21,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/join",
     "/grants/ai-pentest/nl",
     "/grants/ai-pentest/en",
+    wwPaths.pentest,
+    wwPaths.checklist,
+    ...guides.map((guide) => wwPaths.guide(guide.slug)),
     "/privacy",
     "/code-of-conduct",
   ].map((path) => ({
