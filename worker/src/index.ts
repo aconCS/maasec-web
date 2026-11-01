@@ -17,6 +17,8 @@ type Env = {
   MAIL_FROM: string;
   /** Where applications land. */
   MAIL_TO: string;
+  /** Where AI pentest requests land; falls back to MAIL_TO. */
+  PENTEST_MAIL_TO?: string;
   /** Resend API key — set via `wrangler secret put`, never in wrangler.jsonc. */
   RESEND_API_KEY?: string;
   /**
@@ -113,6 +115,7 @@ type HiringApplication = {
 };
 
 type PentestRequest = {
+  lang: "nl" | "en";
   name: string;
   email: string;
   organisation: string;
@@ -120,6 +123,7 @@ type PentestRequest = {
   website: string;
   location: string;
   message: string;
+  tracking: Record<string, string>;
 };
 
 /**
@@ -245,33 +249,93 @@ function parseHiring(input: unknown): HiringApplication | string {
   };
 }
 
+type PentestLang = "nl" | "en";
+
+/** Validation messages for the pentest form, in the language of the page. */
+const PENTEST_MESSAGES: Record<PentestLang, Record<string, string>> = {
+  en: {
+    invalid: "Invalid request.",
+    name: "Tell us your name.",
+    email: "Enter a valid email address.",
+    organisation: "Tell us your organisation's name.",
+    orgType: "Pick the type of organisation.",
+    website: "Enter your website address, for example www.example.nl.",
+    location: "Tell us your city or town.",
+    authorised: "Confirm you're allowed to request a test of this website.",
+    sendFailed: "We couldn't send that right now. Try again shortly.",
+  },
+  nl: {
+    invalid: "Ongeldige aanvraag.",
+    name: "Vul je naam in.",
+    email: "Vul een geldig e-mailadres in.",
+    organisation: "Vul de naam van je organisatie in.",
+    orgType: "Kies het soort organisatie.",
+    website: "Vul het adres van je website in, bijvoorbeeld www.voorbeeld.nl.",
+    location: "Vul je plaats in.",
+    authorised: "Bevestig dat je een test van deze website mag aanvragen.",
+    sendFailed: "We konden dit nu niet versturen. Probeer het zo opnieuw.",
+  },
+};
+
+function pentestLang(input: unknown): PentestLang {
+  const lang = (input as Record<string, unknown> | null)?.lang;
+  return lang === "nl" ? "nl" : "en";
+}
+
+/** URL parameters the landing page forwards for ad attribution. */
+const TRACKING_KEYS = [
+  "gclid",
+  "gbraid",
+  "wbraid",
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_term",
+  "utm_content",
+] as const;
+
+function parseTracking(input: unknown): Record<string, string> {
+  if (typeof input !== "object" || input === null) return {};
+  const data = input as Record<string, unknown>;
+  const tracking: Record<string, string> = {};
+  for (const key of TRACKING_KEYS) {
+    const value = data[key];
+    if (typeof value !== "string") continue;
+    // Printable characters only, so nothing odd ends up in the email.
+    const clean = value.replace(/[^\x20-\x7E -￿]/g, "").trim().slice(0, 512);
+    if (clean) tracking[key] = clean;
+  }
+  return tracking;
+}
+
 /**
- * Lead form on /grants/ai-pentest. The authorisation box must be ticked: we
- * only ever test a site its owner has asked us to, and the signed scope
- * agreement that follows is the real permission.
+ * Lead form on /grants/ai-pentest/{nl,en}. The authorisation box must be
+ * ticked: we only ever test a site its owner has asked us to, and the signed
+ * scope agreement that follows is the real permission.
  */
-function parsePentest(input: unknown): PentestRequest | string {
-  if (typeof input !== "object" || input === null) return "Invalid request.";
+function parsePentest(input: unknown, lang: PentestLang): PentestRequest | string {
+  const m = PENTEST_MESSAGES[lang];
+  if (typeof input !== "object" || input === null) return m.invalid;
   const data = input as Record<string, unknown>;
 
   const str = (v: unknown) => (typeof v === "string" ? v.trim() : "");
 
   const name = str(data.name);
-  if (name.length < 1 || name.length > 120) return "Tell us your name.";
+  if (name.length < 1 || name.length > 120) return m.name;
 
   const email = str(data.email);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
-    return "Enter a valid email address.";
+    return m.email;
   }
 
   const organisation = str(data.organisation);
   if (organisation.length < 1 || organisation.length > 160) {
-    return "Tell us your organisation's name.";
+    return m.organisation;
   }
 
   const orgType = str(data.orgType);
   if (!(PENTEST_ORG_TYPES as readonly string[]).includes(orgType)) {
-    return "Pick the type of organisation.";
+    return m.orgType;
   }
 
   // A domain with an optional scheme and path. Loose on purpose: the
@@ -281,21 +345,32 @@ function parsePentest(input: unknown): PentestRequest | string {
     website.length > 200 ||
     !/^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}(:\d+)?(\/\S*)?$/i.test(website)
   ) {
-    return "Enter your website address, for example www.example.nl.";
+    return m.website;
   }
 
   const location = str(data.location);
   if (location.length < 1 || location.length > 120) {
-    return "Tell us your city or town.";
+    return m.location;
   }
 
   if (data.authorised !== true) {
-    return "Confirm you're allowed to request a test of this website.";
+    return m.authorised;
   }
 
   const message = str(data.message).slice(0, 2000);
+  const tracking = parseTracking(data.tracking);
 
-  return { name, email, organisation, orgType, website, location, message };
+  return {
+    lang,
+    name,
+    email,
+    organisation,
+    orgType,
+    website,
+    location,
+    message,
+    tracking,
+  };
 }
 
 /** Fixed-window per-IP limit. No-op unless a KV namespace is bound. */
@@ -424,9 +499,50 @@ async function sendHiringMail(app: HiringApplication, env: Env): Promise<boolean
   return true;
 }
 
+/** Google Ads offline-conversion time format: "yyyy-mm-dd hh:mm:ss+00:00". */
+function adsConversionTime(date: Date): string {
+  return `${date.toISOString().slice(0, 19).replace("T", " ")}+00:00`;
+}
+
 async function sendPentestMail(lead: PentestRequest, env: Env): Promise<boolean> {
+  const receivedAt = new Date();
+  const { gclid, gbraid, wbraid } = lead.tracking;
+  const clickId = gclid ?? gbraid ?? wbraid;
+  const clickIdName = gclid ? "gclid" : gbraid ? "gbraid" : wbraid ? "wbraid" : "";
+  const utm = Object.entries(lead.tracking).filter(([key]) => key.startsWith("utm_"));
+
+  const text = [
+    `Organisation:  ${lead.organisation} (${lead.orgType})`,
+    `Website:       ${lead.website}`,
+    `Location:      ${lead.location}`,
+    `Contact:       ${lead.name}`,
+    `Email:         ${lead.email}`,
+    `Language:      ${lead.lang}`,
+    `Received:      ${receivedAt.toISOString()}`,
+    "",
+    "Message:",
+    lead.message || "(none provided)",
+    "",
+    "Source:",
+    ...(utm.length > 0
+      ? utm.map(([key, value]) => `  ${key.padEnd(13)} ${value}`)
+      : ["  (no utm tags)"]),
+    ...(clickId
+      ? [
+          "",
+          "Google Ads conversion (upload under Goals > Conversions > Uploads):",
+          `  ${clickIdName}:${" ".repeat(Math.max(1, 14 - clickIdName.length))}${clickId}`,
+          `  Conversion time: ${adsConversionTime(receivedAt)}`,
+        ]
+      : ["", "Google Ads: no ad click ID (not from an ad, or auto-tagging off)."]),
+    "",
+    "The requester confirmed they're authorised to request this test.",
+    "Do not start testing until the scope agreement is signed and you've",
+    "confirmed the organisation controls the website.",
+  ].join("\n");
+
   if (!env.RESEND_API_KEY) {
-    console.info("[pentest] RESEND_API_KEY unset — would have sent:", lead);
+    console.info("[pentest] RESEND_API_KEY unset — would have sent:\n" + text);
     return true;
   }
 
@@ -438,24 +554,11 @@ async function sendPentestMail(lead: PentestRequest, env: Env): Promise<boolean>
     },
     body: JSON.stringify({
       from: env.MAIL_FROM,
-      to: env.MAIL_TO,
-      // Prefixed so the board can filter requests into their own label.
+      to: env.PENTEST_MAIL_TO || env.MAIL_TO,
+      // Prefixed so requests can be filtered into their own label.
       subject: `[Pentest request] ${lead.organisation} — ${lead.website}`,
       reply_to: lead.email,
-      text: [
-        `Organisation:  ${lead.organisation} (${lead.orgType})`,
-        `Website:       ${lead.website}`,
-        `Location:      ${lead.location}`,
-        `Contact:       ${lead.name}`,
-        `Email:         ${lead.email}`,
-        "",
-        "Message:",
-        lead.message || "(none provided)",
-        "",
-        "The requester confirmed they're authorised to request this test.",
-        "Do not start testing until the scope agreement is signed and you've",
-        "confirmed the organisation controls the website.",
-      ].join("\n"),
+      text,
     }),
   });
 
@@ -527,17 +630,14 @@ export default {
     }
 
     if (kind === "pentest") {
-      const parsed = parsePentest(body);
+      const lang = pentestLang(body);
+      const parsed = parsePentest(body, lang);
       if (typeof parsed === "string") {
         return json({ error: parsed }, 400, cors);
       }
       const sent = await sendPentestMail(parsed, env);
       if (!sent) {
-        return json(
-          { error: "We couldn't send that right now. Try again shortly." },
-          502,
-          cors,
-        );
+        return json({ error: PENTEST_MESSAGES[lang].sendFailed }, 502, cors);
       }
       return json({ ok: true }, 200, cors);
     }

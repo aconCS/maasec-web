@@ -72,7 +72,7 @@ export default function PrivacyPage() {
           </ul>
           <p className={p}>
             If you request a free penetration test on our{" "}
-            <a href="/grants/ai-pentest" className="text-blue-600 underline underline-offset-2 hover:text-blue-800">AI pentest</a>{" "}
+            <a href="/grants/ai-pentest/en" className="text-blue-600 underline underline-offset-2 hover:text-blue-800">AI pentest</a>{" "}
             page, we receive:
           </p>
           <ul className={ul}>
@@ -87,6 +87,14 @@ export default function PrivacyPage() {
             <li className={li}>
               your confirmation that you&rsquo;re allowed to request the test
             </li>
+            <li className={li}>
+              which language version of the page you used (Dutch or English)
+            </li>
+            <li className={li}>
+              if you reached the page through one of our ads: the ad click ID
+              and campaign tags that were in the link you clicked (such as{" "}
+              <code>gclid</code> and <code>utm_campaign</code>)
+            </li>
           </ul>
           <p className={p}>
             That&rsquo;s the complete list. This site sets no cookies, runs
@@ -94,11 +102,23 @@ export default function PrivacyPage() {
             there is nothing else being collected in the background.
           </p>
 
+          <h2 className={h2}>Google Ads</h2>
+          <p className={p}>
+            We advertise the free penetration test with Google Ads. When you
+            click one of those ads, Google adds a click ID to the link. If you
+            then send the request form, that click ID is sent along with it,
+            and we report to Google Ads that the ad led to a request. We send
+            Google only the click ID and the time of your request, never what
+            you wrote in the form. Nothing is stored on your device for this:
+            no cookies and no Google scripts are used on our site.
+          </p>
+
           <h2 className={h2}>How we use it, and who sees it</h2>
           <p className={p}>
             Submitting a form sends your details, over an encrypted
-            connection, straight to an email inbox the board reads — MaaSec&rsquo;s
-            own website has no database that stores your submission. That
+            connection, straight to the email inbox of the board member who
+            handles it — MaaSec&rsquo;s own website has no database that
+            stores your submission. That
             email is delivered via Resend, an email-sending service acting
             only on our instructions as a data processor; we don&rsquo;t use it
             for anything beyond delivering your message. We keep

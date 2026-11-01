@@ -11,9 +11,12 @@
     // Origins allowed to POST here. Anything else is rejected with 403, which
     // is what stops third parties burning the Resend quota. Include the
     // localhost origin you use for `npm run serve` while testing.
-    "ALLOWED_ORIGINS": "https://maasec.com,http://localhost:4400",
+    "ALLOWED_ORIGINS": "https://maasec.com,https://www.maasec.com,http://localhost:4400",
     "MAIL_FROM": "MaaSec <noreply@maasec.com>",
-    "MAIL_TO": "acm@maasec.com"
+    "MAIL_TO": "acm@maasec.com",
+    // AI pentest requests from /grants/ai-pentest go to the board member
+    // coordinating them instead of the shared inbox.
+    "PENTEST_MAIL_TO": "lukatoplak2005@gmail.com"
   }
 
   // RESEND_API_KEY is a secret, never a var:

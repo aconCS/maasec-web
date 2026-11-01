@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Lora, Poppins } from "next/font/google";
+import { HtmlLang } from "@/components/site/html-lang";
 import { Reveal } from "@/components/site/reveal";
 import { site } from "@/lib/site";
 import "./globals.css";
@@ -56,6 +57,7 @@ export default function RootLayout({
         </a>
         {children}
         <Reveal />
+        <HtmlLang />
       </body>
     </html>
   );

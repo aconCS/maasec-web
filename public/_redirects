@@ -1,0 +1,6 @@
+# Cloudflare Pages redirects. Query strings (?gclid=…, ?utm_…) are kept.
+# The AI pentest pages exist in Dutch and English; the bare URL goes to Dutch.
+/grants/ai-pentest            /grants/ai-pentest/nl          301
+/grants/ai-pentest/           /grants/ai-pentest/nl          301
+/grants/ai-pentest-success    /grants/ai-pentest-success/nl  301
+/grants/ai-pentest-success/   /grants/ai-pentest-success/nl  301
