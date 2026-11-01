@@ -128,7 +128,8 @@ type Ctx = { waitUntil(promise: Promise<unknown>): void };
 const SITE_URL = "https://maasec.com";
 
 type PentestRequest = {
-  lang: "nl" | "en";
+  /** Page version the form was sent from: nl, en or ww. */
+  lang: FormLang;
   sourcePage: string;
   name: string;
   email: string;
@@ -291,6 +292,13 @@ const PENTEST_MESSAGES: Record<PentestLang, Record<string, string>> = {
   },
 };
 
+/** Page version a form reports (nl, en or ww), recorded with the lead. */
+type FormLang = "nl" | "en" | "ww";
+
+function formLang(input: unknown, fallback: FormLang): FormLang {
+  return input === "nl" || input === "en" || input === "ww" ? input : fallback;
+}
+
 function pentestLang(input: unknown): PentestLang {
   const lang = (input as Record<string, unknown> | null)?.lang;
   return lang === "nl" ? "nl" : "en";
@@ -382,7 +390,7 @@ function parsePentest(input: unknown, lang: PentestLang): PentestRequest | strin
   const tracking = parseTracking(data.tracking);
 
   return {
-    lang,
+    lang: formLang(data.lang, lang),
     sourcePage: parseSourcePage(data.source_page),
     name,
     email,
@@ -522,6 +530,7 @@ async function sendHiringMail(app: HiringApplication, env: Env): Promise<boolean
 }
 
 type ChecklistSignup = {
+  lang: FormLang;
   email: string;
   name: string;
   organisation: string;
@@ -546,6 +555,7 @@ function parseChecklist(input: unknown): ChecklistSignup | string {
   }
 
   return {
+    lang: formLang(data.lang, "en"),
     email,
     name: str(data.name).slice(0, 80),
     organisation: str(data.organisation).slice(0, 160),
@@ -605,14 +615,15 @@ function pentestSheetLead(lead: PentestRequest, receivedAt: Date): SheetLead {
     ...sheetTracking(lead.tracking),
     lead_type: "pentest",
     source_page: lead.sourcePage,
-    newsletter: "no",
+    // The pentest form has no newsletter box.
+    newsletter: "",
   };
 }
 
 function checklistSheetLead(signup: ChecklistSignup, receivedAt: Date): SheetLead {
   return {
     received_at: receivedAt.toISOString(),
-    lang: "en",
+    lang: signup.lang,
     name: signup.name,
     email: signup.email,
     organisation: signup.organisation,
