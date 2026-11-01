@@ -26,7 +26,7 @@ export default function PrivacyPage() {
             Privacy
           </h1>
           <p className="mb-6 font-body text-sm text-gray-600">
-            Last updated August 2026
+            Last updated November 2026
           </p>
 
           <p className={p}>
@@ -54,9 +54,9 @@ export default function PrivacyPage() {
 
           <h2 className={h2}>What we collect</h2>
           <p className={p}>
-            The only place this site asks you for personal information is
-            the <a href="/join" className="text-blue-600 underline underline-offset-2 hover:text-blue-800">Join</a>{" "}
-            form. If you use it, we receive:
+            If you apply through the{" "}
+            <a href="/join" className="text-blue-600 underline underline-offset-2 hover:text-blue-800">Join</a>{" "}
+            form, we receive:
           </p>
           <ul className={ul}>
             <li className={li}>your first name and surname</li>
@@ -71,6 +71,24 @@ export default function PrivacyPage() {
             <li className={li}>which team you&rsquo;re applying to</li>
           </ul>
           <p className={p}>
+            If you request a free penetration test on our{" "}
+            <a href="/grants/ai-pentest" className="text-blue-600 underline underline-offset-2 hover:text-blue-800">AI pentest</a>{" "}
+            page, we receive:
+          </p>
+          <ul className={ul}>
+            <li className={li}>your name and email address</li>
+            <li className={li}>
+              your organisation&rsquo;s name, type, and city or town
+            </li>
+            <li className={li}>the website you&rsquo;d like us to test</li>
+            <li className={li}>
+              whatever you write in the optional message field
+            </li>
+            <li className={li}>
+              your confirmation that you&rsquo;re allowed to request the test
+            </li>
+          </ul>
+          <p className={p}>
             That&rsquo;s the complete list. This site sets no cookies, runs
             no analytics, and has no tracking pixels or advertising scripts —
             there is nothing else being collected in the background.
@@ -78,14 +96,16 @@ export default function PrivacyPage() {
 
           <h2 className={h2}>How we use it, and who sees it</h2>
           <p className={p}>
-            Submitting the Join form sends your details, over an encrypted
+            Submitting a form sends your details, over an encrypted
             connection, straight to an email inbox the board reads — MaaSec&rsquo;s
             own website has no database that stores your submission. That
             email is delivered via Resend, an email-sending service acting
             only on our instructions as a data processor; we don&rsquo;t use it
-            for anything beyond delivering your application. We keep
+            for anything beyond delivering your message. We keep
             applications only for as long as it takes to process them
-            (typically a few weeks), then delete them.
+            (typically a few weeks), then delete them. We keep test requests
+            only for as long as we need them to arrange and carry out the
+            test and any follow-up, then delete them.
           </p>
           <p className={p}>
             If you message us on Discord, WhatsApp, or by email instead, that

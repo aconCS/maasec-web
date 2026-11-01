@@ -42,6 +42,9 @@ type HiringProgramId = (typeof HIRING_PROGRAMS)[number];
 
 const AFFILIATIONS = ["um-student", "other-student", "industry", "other"] as const;
 
+/** Keep in sync with orgTypes in src/components/pentest/request-form.tsx. */
+const PENTEST_ORG_TYPES = ["small-business", "non-profit", "community", "other"] as const;
+
 const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW_SECONDS = 60;
 
@@ -107,6 +110,16 @@ type HiringApplication = {
   links: string;
   hours: string;
   motivation: string;
+};
+
+type PentestRequest = {
+  name: string;
+  email: string;
+  organisation: string;
+  orgType: string;
+  website: string;
+  location: string;
+  message: string;
 };
 
 /**
@@ -230,6 +243,59 @@ function parseHiring(input: unknown): HiringApplication | string {
     hours,
     motivation,
   };
+}
+
+/**
+ * Lead form on /grants/ai-pentest. The authorisation box must be ticked: we
+ * only ever test a site its owner has asked us to, and the signed scope
+ * agreement that follows is the real permission.
+ */
+function parsePentest(input: unknown): PentestRequest | string {
+  if (typeof input !== "object" || input === null) return "Invalid request.";
+  const data = input as Record<string, unknown>;
+
+  const str = (v: unknown) => (typeof v === "string" ? v.trim() : "");
+
+  const name = str(data.name);
+  if (name.length < 1 || name.length > 120) return "Tell us your name.";
+
+  const email = str(data.email);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+    return "Enter a valid email address.";
+  }
+
+  const organisation = str(data.organisation);
+  if (organisation.length < 1 || organisation.length > 160) {
+    return "Tell us your organisation's name.";
+  }
+
+  const orgType = str(data.orgType);
+  if (!(PENTEST_ORG_TYPES as readonly string[]).includes(orgType)) {
+    return "Pick the type of organisation.";
+  }
+
+  // A domain with an optional scheme and path. Loose on purpose: the
+  // volunteer confirms the exact scope with the owner before anything runs.
+  const website = str(data.website);
+  if (
+    website.length > 200 ||
+    !/^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}(:\d+)?(\/\S*)?$/i.test(website)
+  ) {
+    return "Enter your website address, for example www.example.nl.";
+  }
+
+  const location = str(data.location);
+  if (location.length < 1 || location.length > 120) {
+    return "Tell us your city or town.";
+  }
+
+  if (data.authorised !== true) {
+    return "Confirm you're allowed to request a test of this website.";
+  }
+
+  const message = str(data.message).slice(0, 2000);
+
+  return { name, email, organisation, orgType, website, location, message };
 }
 
 /** Fixed-window per-IP limit. No-op unless a KV namespace is bound. */
@@ -358,6 +424,48 @@ async function sendHiringMail(app: HiringApplication, env: Env): Promise<boolean
   return true;
 }
 
+async function sendPentestMail(lead: PentestRequest, env: Env): Promise<boolean> {
+  if (!env.RESEND_API_KEY) {
+    console.info("[pentest] RESEND_API_KEY unset — would have sent:", lead);
+    return true;
+  }
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: env.MAIL_FROM,
+      to: env.MAIL_TO,
+      // Prefixed so the board can filter requests into their own label.
+      subject: `[Pentest request] ${lead.organisation} — ${lead.website}`,
+      reply_to: lead.email,
+      text: [
+        `Organisation:  ${lead.organisation} (${lead.orgType})`,
+        `Website:       ${lead.website}`,
+        `Location:      ${lead.location}`,
+        `Contact:       ${lead.name}`,
+        `Email:         ${lead.email}`,
+        "",
+        "Message:",
+        lead.message || "(none provided)",
+        "",
+        "The requester confirmed they're authorised to request this test.",
+        "Do not start testing until the scope agreement is signed and you've",
+        "confirmed the organisation controls the website.",
+      ].join("\n"),
+    }),
+  });
+
+  if (!response.ok) {
+    console.error("[pentest] Resend error", response.status, await response.text());
+    return false;
+  }
+  return true;
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const cors = corsHeaders(request, env);
@@ -396,8 +504,9 @@ export default {
     }
 
     // One endpoint, several shapes: the join form (default), the software
-    // team's commission form ("kind": "commission"), and project hiring on
-    // /hiring ("kind": "hiring"). Keeping them on the
+    // team's commission form ("kind": "commission"), project hiring on
+    // /hiring ("kind": "hiring"), and pentest requests from
+    // /grants/ai-pentest ("kind": "pentest"). Keeping them on the
     // same Worker avoids a second URL, secret, and deploy for one more
     // form with an identical trust boundary.
     const kind = (body as Record<string, unknown> | null)?.kind;
@@ -407,6 +516,22 @@ export default {
         return json({ error: parsed }, 400, cors);
       }
       const sent = await sendCommissionMail(parsed, env);
+      if (!sent) {
+        return json(
+          { error: "We couldn't send that right now. Try again shortly." },
+          502,
+          cors,
+        );
+      }
+      return json({ ok: true }, 200, cors);
+    }
+
+    if (kind === "pentest") {
+      const parsed = parsePentest(body);
+      if (typeof parsed === "string") {
+        return json({ error: parsed }, 400, cors);
+      }
+      const sent = await sendPentestMail(parsed, env);
       if (!sent) {
         return json(
           { error: "We couldn't send that right now. Try again shortly." },
