@@ -1,0 +1,57 @@
+name: Deploy site
+
+# Builds the static export and uploads it to the maasec-web Cloudflare Pages
+# project. Pushes to main go to production (maasec.com); pushes to any other
+# branch become a preview at <branch>.maasec-web.pages.dev.
+#
+# This replaces Cloudflare's own GitHub integration, which stopped picking up
+# pushes after 22 Oct 2026. Deploying from here means a push is all it takes,
+# whatever happens to that integration.
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch:
+  # The sync workflows commit with GITHUB_TOKEN, and those pushes don't start
+  # other workflows, so redeploy main whenever one of them finishes.
+  workflow_run:
+    workflows: ["Sync GitHub projects", "Sync CTFtime standings"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-site-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build static export
+        run: npm run build
+        env:
+          # Public endpoint of the form Worker (worker/), baked into the
+          # client bundle at build time.
+          NEXT_PUBLIC_APPLY_ENDPOINT: https://maasec-apply.2005acon.workers.dev
+
+      - name: Deploy to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: >
+          npx --yes wrangler@4 pages deploy out
+          --project-name maasec-web
+          --branch "${{ github.ref_name }}"
+          --commit-hash "${{ github.sha }}"
+          --commit-dirty=true
