@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Footer } from "@/components/site/footer";
 import { Nav } from "@/components/site/nav";
 import { site } from "@/lib/site";
@@ -71,14 +72,15 @@ export default function PrivacyPage() {
             <li className={li}>which team you&rsquo;re applying to</li>
           </ul>
           <p className={p}>
-            If you request a free penetration test on our{" "}
-            <a href="/grants/ai-pentest/en" className="text-blue-600 underline underline-offset-2 hover:text-blue-800">AI pentest</a>{" "}
-            page, we receive:
+            If you request a free penetration test on one of our{" "}
+            <Link href="/grants/ai-pentest/en" className="text-blue-600 underline underline-offset-2 hover:text-blue-800">AI pentest</Link>{" "}
+            pages, we receive:
           </p>
           <ul className={ul}>
             <li className={li}>your name and email address</li>
             <li className={li}>
-              your organisation&rsquo;s name, type, and city or town
+              your organisation&rsquo;s name and type, and its city, town or
+              country
             </li>
             <li className={li}>the website you&rsquo;d like us to test</li>
             <li className={li}>
@@ -88,12 +90,31 @@ export default function PrivacyPage() {
               your confirmation that you&rsquo;re allowed to request the test
             </li>
             <li className={li}>
-              which language version of the page you used (Dutch or English)
+              which page and language version you used
             </li>
             <li className={li}>
               if you reached the page through one of our ads: the ad click ID
               and campaign tags that were in the link you clicked (such as{" "}
               <code>gclid</code> and <code>utm_campaign</code>)
+            </li>
+          </ul>
+          <p className={p}>
+            If you sign up for our free{" "}
+            <Link href="/grants/ai-pentest/ww/checklist" className="text-blue-600 underline underline-offset-2 hover:text-blue-800">security checklist</Link>,
+            we receive:
+          </p>
+          <ul className={ul}>
+            <li className={li}>your email address</li>
+            <li className={li}>
+              if you fill them in: your first name, organisation and country
+            </li>
+            <li className={li}>
+              whether you ticked the box for our monthly security tips
+            </li>
+            <li className={li}>which page you signed up on</li>
+            <li className={li}>
+              if you came from one of our ads: the ad click ID and campaign
+              tags from the link you clicked
             </li>
           </ul>
           <p className={p}>
@@ -104,12 +125,12 @@ export default function PrivacyPage() {
 
           <h2 className={h2}>Google Ads</h2>
           <p className={p}>
-            We advertise the free penetration test with Google Ads. When you
-            click one of those ads, Google adds a click ID to the link. If you
-            then send the request form, that click ID is sent along with it,
-            and we report to Google Ads that the ad led to a request. We send
-            Google only the click ID and the time of your request, never what
-            you wrote in the form. Nothing is stored on your device for this:
+            We advertise the free penetration test and the security
+            checklist with Google Ads. When you click one of those ads, Google
+            adds a click ID to the link. If you then send a form, that click
+            ID is sent along with it, and we report to Google Ads that the ad
+            led to a request or signup. We send Google only the click ID and
+            the time, never what you wrote in the form. Nothing is stored on your device for this:
             no cookies and no Google scripts are used on our site.
           </p>
 
@@ -117,15 +138,31 @@ export default function PrivacyPage() {
           <p className={p}>
             Submitting a form sends your details, over an encrypted
             connection, straight to the email inbox of the board member who
-            handles it — MaaSec&rsquo;s own website has no database that
-            stores your submission. That
-            email is delivered via Resend, an email-sending service acting
-            only on our instructions as a data processor; we don&rsquo;t use it
-            for anything beyond delivering your message. We keep
-            applications only for as long as it takes to process them
+            handles it. That email is delivered via Resend, an
+            email-sending service acting only on our instructions as a data
+            processor; we don&rsquo;t use it for anything beyond delivering
+            your message. Penetration test requests and checklist signups are
+            also copied to a private Google Sheet that only the board can
+            open, so we can follow up and see which of our ads lead to
+            requests; Google stores that Sheet for us as a data processor.
+            We keep applications only for as long as it takes to process them
             (typically a few weeks), then delete them. We keep test requests
             only for as long as we need them to arrange and carry out the
             test and any follow-up, then delete them.
+          </p>
+
+          <h2 className={h2}>Security checklist and monthly tips</h2>
+          <p className={p}>
+            When you sign up for the checklist, we send one email with a link
+            to it. We only send our monthly security tips if you ticked that
+            box; it is never ticked for you. Every tips email tells you how to
+            stop them: reply with &ldquo;unsubscribe&rdquo;, or email{" "}
+            <a href={`mailto:${site.email}`} className="text-blue-600 underline underline-offset-2 hover:text-blue-800">
+              {site.email}
+            </a>
+            , and we&rsquo;ll remove your address. If you didn&rsquo;t ask for
+            tips, we won&rsquo;t email you again, and we delete your signup
+            once we no longer need it to measure our campaigns.
           </p>
           <p className={p}>
             If you message us on Discord, WhatsApp, or by email instead, that
