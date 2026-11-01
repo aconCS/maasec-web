@@ -54,7 +54,7 @@ export function ChecklistForm() {
         body: JSON.stringify({
           kind: "checklist",
           lead_type: "checklist",
-          lang: "en",
+          lang: "ww",
           source_page: window.location.pathname,
           email: data.get("email"),
           name: data.get("name"),
