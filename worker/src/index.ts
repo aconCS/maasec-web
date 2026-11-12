@@ -109,6 +109,10 @@ type Commission = {
 };
 
 type HiringApplication = {
+  /** Page version (nl/en/ww), page path and ad tags, for the Sheet. */
+  lang: FormLang;
+  sourcePage: string;
+  tracking: Record<string, string>;
   program: HiringProgramId;
   role: string;
   name: string;
@@ -251,6 +255,9 @@ function parseHiring(input: unknown): HiringApplication | string {
   if (motivation.length < 1) return "Tell us what you'd work on.";
 
   return {
+    lang: formLang(data.lang, "en"),
+    sourcePage: parseSourcePage(data.source_page),
+    tracking: parseTracking(data.tracking),
     program: program as HiringProgramId,
     role,
     name,
@@ -620,6 +627,52 @@ function pentestSheetLead(lead: PentestRequest, receivedAt: Date): SheetLead {
   };
 }
 
+const PROGRAM_NAMES: Record<string, string> = {
+  ctf: "CTF",
+  consultancy: "Consultancy",
+  swe: "Software development",
+  marketing: "Marketing & outreach",
+  events: "Events",
+  nightjar: "Nightjar",
+  collab: "Collaboration",
+};
+
+const AFFILIATION_NAMES: Record<string, string> = {
+  "um-student": "Maastricht University student",
+  "other-student": "Student elsewhere",
+  industry: "Working",
+  other: "Other",
+};
+
+/**
+ * Volunteer applications from /join, /join/students, /join/studenten and
+ * /hiring. The form has no message field, so the team, status and hours go
+ * there. The motivation and student number stay out of the Sheet: they are
+ * only needed in the board's email, not for reporting ad conversions.
+ */
+function volunteerSheetLead(app: HiringApplication, receivedAt: Date): SheetLead {
+  return {
+    received_at: receivedAt.toISOString(),
+    lang: app.lang,
+    name: `${app.name} ${app.surname}`,
+    email: app.email,
+    organisation: "",
+    orgType: "",
+    website: "",
+    location: "",
+    message: [
+      `Team: ${PROGRAM_NAMES[app.program] ?? app.program}`,
+      AFFILIATION_NAMES[app.affiliation] ?? app.affiliation,
+      `${app.hours} h/week`,
+    ].join(" · "),
+    authorised: "",
+    ...sheetTracking(app.tracking),
+    lead_type: "volunteer",
+    source_page: app.sourcePage,
+    newsletter: "",
+  };
+}
+
 function checklistSheetLead(signup: ChecklistSignup, receivedAt: Date): SheetLead {
   return {
     received_at: receivedAt.toISOString(),
@@ -900,6 +953,7 @@ export default {
       if (typeof parsed === "string") {
         return json({ error: parsed }, 400, cors);
       }
+      const receivedAt = new Date();
       const sent = await sendHiringMail(parsed, env);
       if (!sent) {
         return json(
@@ -908,6 +962,7 @@ export default {
           cors,
         );
       }
+      postToSheet(volunteerSheetLead(parsed, receivedAt), env, ctx);
       return json({ ok: true }, 200, cors);
     }
 

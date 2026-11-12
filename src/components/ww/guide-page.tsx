@@ -15,7 +15,8 @@ export type GuideBlock =
   | { steps: string[] }
   | { list: string[] }
   | { note: string }
-  | { example: { label: string; lines: string[] } };
+  | { example: { label: string; lines: string[] } }
+  | { passwords: { strength: "weak" | "strong"; password: string; why: string }[] };
 
 export type GuideSection = { heading: string; blocks: GuideBlock[] };
 
@@ -96,6 +97,46 @@ function Block({ block }: { block: GuideBlock }) {
           </li>
         ))}
       </ul>
+    );
+  if ("passwords" in block)
+    return (
+      <div className="grid gap-4 md:grid-cols-2">
+        {(["weak", "strong"] as const).map((strength) => (
+          <div key={strength} className="flex flex-col gap-3">
+            <h3
+              className={`font-display text-[17px] font-bold ${
+                strength === "weak" ? "text-[var(--color-danger)]" : "text-blue-700"
+              }`}
+            >
+              {strength === "weak" ? "✗ Weak" : "✓ Strong"}
+            </h3>
+            <ul className="flex flex-col gap-3">
+              {block.passwords
+                .filter((example) => example.strength === strength)
+                .map((example) => (
+                  <li
+                    key={example.password}
+                    className={`flex flex-col gap-1.5 rounded-card border p-4 ${
+                      strength === "weak"
+                        ? "border-[var(--color-danger)]/30 bg-gray-100"
+                        : "border-blue-200 bg-blue-50"
+                    }`}
+                  >
+                    <span className="font-mono text-[11px] leading-none tracking-[0.12em] text-gray-600 uppercase">
+                      Example only — don&rsquo;t use this one
+                    </span>
+                    <code className="font-mono text-[16px] font-medium break-all text-blue-900">
+                      {example.password}
+                    </code>
+                    <span className="font-body text-[15px] leading-snug text-gray-700">
+                      {example.why}
+                    </span>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        ))}
+      </div>
     );
   if ("note" in block)
     return (

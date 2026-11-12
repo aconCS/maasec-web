@@ -95,7 +95,12 @@ export default async function JoinPage() {
             </div>
           </header>
           <Suspense fallback={null}>
-            <HiringApply programs={programs} id="hiring" theme="blue" />
+            <HiringApply
+              programs={programs}
+              id="hiring"
+              theme="blue"
+              successPath="/join/students/thanks"
+            />
           </Suspense>
         </div>
       </main>

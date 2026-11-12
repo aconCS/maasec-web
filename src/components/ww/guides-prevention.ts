@@ -294,6 +294,58 @@ export const strongPasswords: Guide = {
       ],
     },
     {
+      heading: "Strong password examples vs. weak ones",
+      blocks: [
+        {
+          p: "Seeing them side by side makes the difference clear. Every example here is fictional, and because it's published on this page, none of them is safe to use any more. Use them as a pattern, then make your own.",
+        },
+        {
+          passwords: [
+            {
+              strength: "weak",
+              password: "password123",
+              why: "One of the most common passwords in breach data. Cracking tools try it first.",
+            },
+            {
+              strength: "weak",
+              password: "Summer2024!",
+              why: "A season, a year and an exclamation mark: exactly the pattern attackers expect.",
+            },
+            {
+              strength: "weak",
+              password: "P@ssw0rd",
+              why: "Swapping letters for symbols is a well-known trick, so it adds almost no strength.",
+            },
+            {
+              strength: "weak",
+              password: "qwerty12345",
+              why: "A keyboard row plus counting. It's on every list of guessed passwords.",
+            },
+            {
+              strength: "strong",
+              password: "copper umbrella lantern biscuit orbit",
+              why: "Five random, unrelated words: long, easy to picture, and hard to guess.",
+            },
+            {
+              strength: "strong",
+              password: "tidal-crayon-walnut-meadow-fable",
+              why: "Another five-word passphrase. Hyphens work fine between the words.",
+            },
+            {
+              strength: "strong",
+              password: "velvet ostrich 17 cobalt harbour",
+              why: "Random words with a number mixed in. The length does most of the work.",
+            },
+            {
+              strength: "strong",
+              password: "9vQ#t2Lm!xR8zW4p",
+              why: "16 random characters from a password manager. Very strong, but let the manager remember it for you.",
+            },
+          ],
+        },
+      ],
+    },
+    {
       heading: "How to make a strong password you can remember: use a passphrase",
       blocks: [
         {

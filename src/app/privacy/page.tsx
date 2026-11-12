@@ -55,21 +55,29 @@ export default function PrivacyPage() {
 
           <h2 className={h2}>What we collect</h2>
           <p className={p}>
-            If you apply through the{" "}
-            <a href="/join" className="text-blue-600 underline underline-offset-2 hover:text-blue-800">Join</a>{" "}
-            form, we receive:
+            If you apply to join a team through our{" "}
+            <Link href="/join" className="text-blue-600 underline underline-offset-2 hover:text-blue-800">Join</Link>{" "}
+            or student pages, we receive:
           </p>
           <ul className={ul}>
             <li className={li}>your first name and surname</li>
             <li className={li}>your email address</li>
-            <li className={li}>
-              your student number (used only to confirm you&rsquo;re a
-              Maastricht University student)
-            </li>
-            <li className={li}>
-              whatever you write in the optional motivation field
-            </li>
             <li className={li}>which team you&rsquo;re applying to</li>
+            <li className={li}>
+              whether you&rsquo;re a student or working, and how many hours a
+              week you have
+            </li>
+            <li className={li}>
+              your student number, only if you&rsquo;re a Maastricht
+              University student (used only to confirm that)
+            </li>
+            <li className={li}>any profile links you add</li>
+            <li className={li}>what you write about your motivation</li>
+            <li className={li}>which page and language version you used</li>
+            <li className={li}>
+              if you came from one of our ads: the ad click ID and campaign
+              tags from the link you clicked
+            </li>
           </ul>
           <p className={p}>
             If you request a free penetration test on one of our{" "}
@@ -125,11 +133,11 @@ export default function PrivacyPage() {
 
           <h2 className={h2}>Google Ads</h2>
           <p className={p}>
-            We advertise the free penetration test and the security
-            checklist with Google Ads. When you click one of those ads, Google
+            We advertise the free penetration test, the security checklist
+            and our volunteer roles with Google Ads. When you click one of those ads, Google
             adds a click ID to the link. If you then send a form, that click
             ID is sent along with it, and we report to Google Ads that the ad
-            led to a request or signup. We send Google only the click ID and
+            led to a request, signup or application. We send Google only the click ID and
             the time, never what you wrote in the form. Nothing is stored on your device for this:
             no cookies and no Google scripts are used on our site.
           </p>
@@ -141,10 +149,13 @@ export default function PrivacyPage() {
             handles it. That email is delivered via Resend, an
             email-sending service acting only on our instructions as a data
             processor; we don&rsquo;t use it for anything beyond delivering
-            your message. Penetration test requests and checklist signups are
-            also copied to a private Google Sheet that only the board can
-            open, so we can follow up and see which of our ads lead to
-            requests; Google stores that Sheet for us as a data processor.
+            your message. Penetration test requests, checklist signups and
+            team applications are also copied to a private Google Sheet that
+            only the board can open, so we can follow up and see which of our
+            ads lead to requests; Google stores that Sheet for us as a data
+            processor. For team applications, the Sheet gets only your name,
+            email, team, status and hours, never your motivation or student
+            number.
             We keep applications only for as long as it takes to process them
             (typically a few weeks), then delete them. We keep test requests
             only for as long as we need them to arrange and carry out the
