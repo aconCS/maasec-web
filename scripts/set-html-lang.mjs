@@ -1,6 +1,6 @@
 // Runs after `next build`. The site is a static export with one root layout,
-// which always renders <html lang="en">. Pages whose route ends in /nl are
-// Dutch, so rewrite their exported HTML to lang="nl" — what screen readers,
+// which always renders <html lang="en">. Pages whose route ends in /nl, and
+// the student pages under /join/studenten, are Dutch, so rewrite their exported HTML to lang="nl" — what screen readers,
 // browsers' translate prompts and search engines read before any script runs.
 // src/components/site/html-lang.tsx keeps the attribute in sync after
 // client-side navigation.
@@ -21,7 +21,9 @@ async function* htmlFiles(dir) {
 let changed = 0;
 for await (const file of htmlFiles(OUT)) {
   // out/grants/ai-pentest/nl.html, or out/…/nl/index.html with trailing slashes.
-  const isDutch = /[\\/]nl(\.html|[\\/]index\.html)$/.test(file);
+  const isDutch =
+    /[\\/]nl(\.html|[\\/]index\.html)$/.test(file) ||
+    /[\\/]join[\\/]studenten(\.html|[\\/].*\.html)$/.test(file);
   if (!isDutch) continue;
 
   const html = await readFile(file, "utf8");

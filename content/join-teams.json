@@ -30,5 +30,13 @@
     "benefits": "Book speakers from companies like Google and Microsoft\nOrganise public talks, workshops and CTF events\nGrow MaaSec's reach across the region",
     "open": true,
     "order": 3
+  },
+  {
+    "title": "Marketing & outreach",
+    "teamId": "marketing",
+    "tagline": "Find the small organisations and non-profits that need free security help, and tell people about MaaSec.",
+    "benefits": "Reach out to local businesses, non-profits and partners\nRun MaaSec's social media and campaigns\nSee the direct result of your work in who we help",
+    "open": true,
+    "order": 4
   }
 ]

@@ -59,8 +59,8 @@ export function Footer() {
             </span>
           </div>
           <p className="max-w-[300px] font-body text-[15px] leading-relaxed text-blue-200">
-            A non-profit association protecting small organisations in the
-            Maastricht and Heuvelland region.
+            A non-profit association from Maastricht, protecting small
+            organisations.
           </p>
         </div>
 

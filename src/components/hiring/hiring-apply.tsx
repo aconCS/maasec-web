@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/field";
+import { readTracking } from "@/components/pentest/request-form";
 import type { HiringProgram } from "@/lib/content";
 import { site } from "@/lib/site";
 
@@ -74,15 +75,22 @@ const tones = {
  * Each program is deep-linkable: `#events` (or the older `?program=events` /
  * `?team=events`) opens that tab and scrolls to the section, and choosing a
  * tab rewrites the URL hash so the address bar is always a shareable link.
+ *
+ * Every submission carries the ad click IDs and utm tags from the URL, the
+ * page and the language, for the leads Sheet. With `successPath` set (as on
+ * /join), a successful team application does a full page load to that thanks
+ * page, which Google Ads counts as a conversion.
  */
 export function HiringApply({
   programs,
   id = "apply",
   theme = "light",
+  successPath,
 }: {
   programs: HiringProgram[];
   id?: string;
   theme?: keyof typeof tones;
+  successPath?: string;
 }) {
   const t = tones[theme];
   const params = useSearchParams();
@@ -194,6 +202,10 @@ export function HiringApply({
           links: data.get("links"),
           hours: data.get("hours"),
           motivation: data.get("motivation"),
+          lead_type: "volunteer",
+          lang: "en",
+          source_page: window.location.pathname,
+          tracking: readTracking(),
         }),
       });
       if (!response.ok) {
@@ -203,6 +215,10 @@ export function HiringApply({
           body?.error ??
             `The application didn't go through. Try again, or email ${site.email}.`,
         );
+        return;
+      }
+      if (successPath) {
+        window.location.assign(successPath);
         return;
       }
       setStatus("done");
